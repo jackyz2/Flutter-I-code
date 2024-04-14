@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const models = require("../models");
 
-async function signup(req, res) {
+async function signUp(req, res) {
     const userDoc = models.User({ 
         email: req.body.email,
         password: await argon2.hash(req.body.password)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/dbtest.dart';
 import 'package:flutter_application_1/pages/profilepage.dart';
 import 'package:flutter_application_1/pages/learningpage.dart';
+import 'package:flutter_application_1/pages/registerpage.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -12,10 +13,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       
-      home: const MyHomePage(title: 'I-code'),
+      home: MyHomePage(title: 'I-code'),
     );
   }
 }
@@ -29,9 +30,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  final screens = [LearningPage(), ProfilePage(), dbtestScreen()];
-  Color mainColor = Color(0xFF252C4A);
-  Color secondColor = Color(0xFF117EEB);
+  final screens = [const LearningPage(), const ProfilePage(), RegisterPage()];
+  Color mainColor = const Color(0xFF252C4A);
+  Color secondColor = const Color(0xFF117EEB);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

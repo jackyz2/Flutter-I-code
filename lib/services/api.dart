@@ -5,7 +5,7 @@ class API {
   static const baseUrl = "http://192.168.40.240:2000/api/";
 
   static adddata(Map data) async {
-    var url = Uri.parse("${baseUrl}add_data");
+    var url = Uri.parse("${baseUrl}/auth/signup");
     
     try{ 
       final res = await http.post(url, body: data);

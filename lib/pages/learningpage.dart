@@ -16,7 +16,7 @@ class _LearningPageState extends State<LearningPage> {
           child: Card( 
             color: Colors.grey.shade800,
             child: Text( 
-              'Lesson ${count}',
+              'Lesson $count',
               style: TextStyle( 
                 fontSize: 30,
                 color: Colors.blue.shade200,
@@ -25,7 +25,7 @@ class _LearningPageState extends State<LearningPage> {
           ),
         ),
       );
-    };
+    }
     return listItems;
   }
   final List<int> entries = <int>[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];

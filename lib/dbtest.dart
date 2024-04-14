@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_application_1/services/api.dart';
 
 class dbtestScreen extends StatefulWidget {
@@ -22,14 +21,14 @@ class _dbtestScreenState extends State<dbtestScreen> {
           
           ElevatedButton(onPressed: (){
             Navigator.push(context, 
-              MaterialPageRoute(builder: (context) => createScreen())
+              MaterialPageRoute(builder: (context) => const createScreen())
             );
-          }, child: Text("CREATE")
+          }, child: const Text("CREATE")
 
           ),
-          ElevatedButton(onPressed: (){}, child: Text("READ")),
-          ElevatedButton(onPressed: (){}, child: Text("UPDATE")),
-          ElevatedButton(onPressed: (){}, child: Text("DELETE")),
+          ElevatedButton(onPressed: (){}, child: const Text("READ")),
+          ElevatedButton(onPressed: (){}, child: const Text("UPDATE")),
+          ElevatedButton(onPressed: (){}, child: const Text("DELETE")),
         ]
       )
     );
@@ -44,6 +43,7 @@ class createScreen extends StatefulWidget {
 class _createScreenState extends State<createScreen> {
   @override 
   final questionController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(),
@@ -57,7 +57,7 @@ class _createScreenState extends State<createScreen> {
             "questionTitle": questionController.text,
           };
           API.adddata(data);
-        }, child: Text("CreateData")),
+        }, child: const Text("CreateData")),
       ]
     ),
     );
