@@ -1,7 +1,9 @@
 const express = require("express");
 const mongoose = require('mongoose')
 const app = express();
-const Questions = require("./question");
+const jwt = require('jsonwebtoken');
+const authRoute = require('./routes/index')
+
 
 app.use(express.json());
 
@@ -22,19 +24,10 @@ async function connect() {
         console.error(error);
     }
 }
-    connect();
+connect();
 
-    app.post("/api/add_data", async (req, res)=> {
-        console.log("Result", req.body);
-        let data = Questions(req.body);
-        try {
-            let dataToStore = await data.save();
-            res.status(200).json(dataToStore);
-        } catch (error) {
-            res.status(400).json({ 
-                'status': error.message
-            })        }
-    })
+app.use('/api', authRoute)
+
 
 
 
