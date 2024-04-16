@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/profilepage.dart';
 import 'registerpage.dart';
+import 'package:flutter_application_1/services/api.dart';
+import 'package:flutter_application_1/main.dart';
 
 class LoginPage extends StatelessWidget {
 
   LoginPage({super.key});
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+Future<void> attemptLogin(context) async {
+  var data = { 
+    "email": emailController.text,
+    "password": passwordController.text,
+  };
+  var isValid = await API.login(data); // Assuming this should also be awaited
+  
+  if (isValid) {
+    Navigator.pushAndRemoveUntil(
+      context, 
+      MaterialPageRoute(builder: (context) => MyHomePage(title: "home")),
+      (route) => false
+    );
+  } else {
+    // Handle failed validation
+  }
+}
   
   @override
   Widget build(BuildContext context) {
@@ -82,6 +101,7 @@ class LoginPage extends StatelessWidget {
                                   //border: Border(bottom: BorderSide(color: Colors.blueGrey))
                                   ),
                               child: TextField(
+                                obscureText: true,
                                 controller: passwordController,
                                 decoration: const InputDecoration(
                                   hintText: "  Password",
@@ -118,6 +138,7 @@ class LoginPage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           //signUserIn();
+                          attemptLogin(context);
                         },
                         child: Container(
                           height: 50,
@@ -134,7 +155,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      GestureDetector(
+                      /*GestureDetector(
                         onTap: () {
                           //signUserInMSFT();
                         },
@@ -152,7 +173,7 @@ class LoginPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

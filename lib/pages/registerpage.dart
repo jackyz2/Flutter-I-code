@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/api.dart';
@@ -16,7 +16,7 @@ class RegisterPage extends StatelessWidget {
       "email": emailController.text,
       "password": passwordController.text,
     };
-    API.adddata(data);
+    API.signUp(data);
   }
   @override
   Widget build(BuildContext context) {
@@ -94,6 +94,7 @@ class RegisterPage extends StatelessWidget {
                                   //border: Border(bottom: BorderSide(color: Colors.blueGrey))
                                   ),
                               child: TextField(
+                                obscureText: true,
                                 controller: passwordController,
                                 decoration: const InputDecoration(
                                   hintText: "  Password",

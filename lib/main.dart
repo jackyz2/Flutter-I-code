@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/dbtest.dart';
+import 'package:flutter_application_1/pages/authpage.dart';
 import 'package:flutter_application_1/pages/profilepage.dart';
 import 'package:flutter_application_1/pages/learningpage.dart';
 import 'package:flutter_application_1/pages/registerpage.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:flutter_application_1/pages/loginpage.dart';
+import 'package:flutter_application_1/pages/settingspage.dart';
+import 'package:flutter_application_1/services/api.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  bool isAuthenticated = await API.validate();
+  runApp(MyApp(isAuthenticated: isAuthenticated));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isAuthenticated;
+  const MyApp({super.key, required this.isAuthenticated});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      
-      home: MyHomePage(title: 'I-code'),
+      home: isAuthenticated ? MyHomePage(title: 'I-code') : LoginPage(),
     );
   }
 }
@@ -30,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  final screens = [const LearningPage(), const ProfilePage(), RegisterPage()];
+  final screens = [const LearningPage(), const ProfilePage(), SettingsPage()];
   Color mainColor = const Color(0xFF252C4A);
   Color secondColor = const Color(0xFF117EEB);
   @override
