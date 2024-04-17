@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  final screens = [const LearningPage(), const ProfilePage(), SettingsPage()];
+  final screens = [const LearningPage(), ProfilePage(), SettingsPage()];
   Color mainColor = const Color(0xFF252C4A);
   Color secondColor = const Color(0xFF117EEB);
   @override

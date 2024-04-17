@@ -13,16 +13,14 @@ class API {
     
     if(refreshToken != null) {
       var url = Uri.parse("${baseUrl}auth/newactoken");
-      print("this is line 16");
-      print(refreshToken);
       var res = await http.post(url, headers: {"Content-Type": "application/json"}, // Set content type as JSON
         body: json.encode({'refreshToken': refreshToken})); // Send token as part of a JSON body);
-      print(res.statusCode);
       if(res.statusCode == 200) {
-        print("this is line 18");
         await currentUserData.write(key: 'id', value: json.decode(res.body)["id"]);
         await currentUserData.write(key: 'accessToken', value: json.decode(res.body)["accessToken"]);
         await currentUserData.write(key: 'refreshToken', value: json.decode(res.body)["refreshToken"]);
+        await currentUserData.write(key: 'level', value: json.decode(res.body)["level"].toString());
+        //print(await currentUserData.read(key: "level"));
         containUser = true;
         return true;
       }
@@ -36,7 +34,27 @@ class API {
       return false;
     }
 }
-   static signUp(Map data) async {
+
+static signOut() async {
+  var url = Uri.parse("${baseUrl}auth/logout");
+  try {
+    var refreshToken = await currentUserData.read(key: 'refreshToken');
+    var res = await http.post(url, headers: {"Content-Type": "application/json"}, // Set content type as JSON
+    body: json.encode({'refreshToken': refreshToken})); // Send token as part of a JSON body);
+    if(res.statusCode == 200) {
+      containUser = false;
+      currentUserData.deleteAll();
+    }
+    else {
+      print("Failed to get response");
+    }
+  } catch (e) {
+    print(e.toString());
+  }
+
+}
+
+static signUp(Map data) async {
     var url = Uri.parse("${baseUrl}auth/signup");
     try{ 
       var res = await http.post(url, body: data);
@@ -44,6 +62,8 @@ class API {
         await currentUserData.write(key: 'id', value: json.decode(res.body)["id"]);
         await currentUserData.write(key: 'accessToken', value: json.decode(res.body)["accessToken"]);
         await currentUserData.write(key: 'refreshToken', value: json.decode(res.body)["refreshToken"]);
+          await currentUserData.write(key: 'level', value: json.decode(res.body)["level"].toString());
+      
         containUser = true;
     }
     else {
@@ -52,7 +72,7 @@ class API {
     } catch(e) {
       print(e.toString());
     }
-  }
+}
   
   static login(Map data) async {
     var url = Uri.parse("${baseUrl}auth/login");
@@ -62,6 +82,7 @@ class API {
         await currentUserData.write(key: 'id', value: json.decode(res.body)["id"]);
         await currentUserData.write(key: 'accessToken', value: json.decode(res.body)["accessToken"]);
         await currentUserData.write(key: 'refreshToken', value: json.decode(res.body)["refreshToken"]);
+        await currentUserData.write(key: 'level', value: json.decode(res.body)["level"].toString());
         containUser = true;
         print("correct pw, validated");
         return true;

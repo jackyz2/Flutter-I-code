@@ -10,6 +10,9 @@ let UserSchema = new mongoose.Schema({
         require: true,
         type: String,
         select: false,
+    },
+    'level': {
+        type: Number,
     }
 })
 

@@ -30,6 +30,7 @@ Future<void> attemptLogin(context) async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         //padding: EdgeInsets.symmetric(vertical: 30),
         color: Colors.lightBlue[200],
@@ -155,25 +156,7 @@ Future<void> attemptLogin(context) async {
                           ),
                         ),
                       ),
-                      /*GestureDetector(
-                        onTap: () {
-                          //signUserInMSFT();
-                        },
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.lightBlue[200],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Microsoft Login",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      ),*/
+                      
                     ],
                   ),
                 ),

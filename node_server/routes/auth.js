@@ -17,7 +17,8 @@ const models = require("../models");
 const signUp = errorHandler(withTransaction(async (req, res, session)=> {
     const userDoc = models.User({ 
         email: req.body.email,
-        password: await argon2.hash(req.body.password)
+        password: await argon2.hash(req.body.password),
+        level: 0
     });
     const refreshTokenDoc = models.RefreshToken({ 
         owner: userDoc.id
@@ -29,7 +30,8 @@ const signUp = errorHandler(withTransaction(async (req, res, session)=> {
     return{ 
         id: userDoc.id,
         accessToken,
-        refreshToken
+        refreshToken,
+        level: user.level
     };
 }));
 
@@ -47,11 +49,13 @@ const login = errorHandler(withTransaction(async(req, res, session) => {
     await refreshTokenDoc.save({session});
     const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id);
     const accessToken = createAccessToken(userDoc.id);
-
+    //let user = await models.User.findById(refreshToken.id);
+    //print(user.email);
     return {
         id: userDoc.id,
         accessToken,
-        refreshToken
+        refreshToken,
+        level: userDoc.level
     };
 }));
 
@@ -162,18 +166,22 @@ const newRefreshToken = errorHandler(withTransaction(async (req, res, session) =
     return {
         id: currentRefreshToken.userId,
         accessToken: accessToken,
-        refreshToken: refreshToken
+        refreshToken: refreshToken,
+        //level: user.level
     };
 }));
 
 const newAccessToken = errorHandler(async (req, res) => {
     const refreshToken = await validateRefreshToken(req.body.refreshToken);
     const accessToken = createAccessToken(refreshToken.userId);
-
+    let user = await models.User.findById(refreshToken.userId);
+    //print(user.email);
+    
     return {
         id: refreshToken.userId,
         accessToken: accessToken,
-        refreshToken: req.body.refreshToken
+        refreshToken: req.body.refreshToken,
+        level: user.level
     };
 });
 
@@ -202,6 +210,9 @@ const validateRefreshToken = async (token) => {
         throw new HttpError(401, 'Unauthorised');
     }
 };
+
+
+
 
 
 
