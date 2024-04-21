@@ -6,10 +6,6 @@ const {HttpError} = require("../error");
 
 
 
-function tmp(req, res) {}
-
-
-
 
 const jwt = require("jsonwebtoken");
 const models = require("../models");
@@ -49,8 +45,6 @@ const login = errorHandler(withTransaction(async(req, res, session) => {
     await refreshTokenDoc.save({session});
     const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id);
     const accessToken = createAccessToken(userDoc.id);
-    //let user = await models.User.findById(refreshToken.id);
-    //print(user.email);
     return {
         id: userDoc.id,
         accessToken,
@@ -59,71 +53,6 @@ const login = errorHandler(withTransaction(async(req, res, session) => {
     };
 }));
 
-const validateAccessToken = async (token) => {
-    const decodeToken = () => {
-        try {
-            return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        } catch(err) {
-            // err
-            throw new HttpError(401, 'Unauthorised');
-        }
-    }
-
-    const decodedToken = decodeToken();
-    const tokenExists = await models.RefreshToken.exists({_id: decodedToken.tokenId, owner: decodedToken.userId});
-    if (tokenExists) {
-        return decodedToken;
-    } else {
-        throw new HttpError(401, 'Unauthorised');
-    }
-};
-
-const sessionAuth = errorHandler(withTransaction(async (req, res, session) => {
-    // Decode the access token from the Authorization header
-    const accessToken = req.headers.authorization?.split(' ')[1];  // Assuming token is sent as "Bearer <token>"
-
-    if (!accessToken) {
-        throw new HttpError(401, 'Access token is required');
-    }
-
-    // Validate the access token and retrieve the user ID encoded within
-    let userId;
-    try {
-        const decoded = await validateAccessToken(accessToken);  // Function to verify token and extract user info
-        userId = decoded.userId;
-    } catch (error) {
-        throw new HttpError(401, 'Invalid or expired access token');
-    }
-
-    // Fetch the user document using the ID from the access token
-    const userDoc = await models.User.findById(userId).exec();
-    if (!userDoc) {
-        throw new HttpError(404, 'User not found');
-    }
-
-    // Process to handle refresh token creation or management
-    if (req.body.operation === 'refreshAccessToken') {  // Assuming a field to specify the operation type
-        const refreshToken = req.body.refreshToken;
-
-        // Validate the provided refresh token
-        if (!await validateRefreshToken(refreshToken)) {
-            throw new HttpError(401, 'Invalid refresh token');
-        }
-
-        // Create a new access token
-        const newAccessToken = createAccessToken(userDoc.id);
-        const newRefreshToken = createRefreshToken(userDoc.id, refreshToken);  // Assuming refreshToken needs updating
-
-        return {
-            id: userDoc.id,
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken
-        };
-    }
-
-    // If no specific operation, just return user info
-    return { id: userDoc.id };
-}));
 
 
 const verifyPassword = async (hashedpw, rawpw) => { 
@@ -218,7 +147,6 @@ const validateRefreshToken = async (token) => {
 
 router.post('/signup', signUp)
 router.post('/login', login);
-router.post('/sessionauth', sessionAuth);
 router.post('/newactoken', newAccessToken);
 router.post('/newrftoken', newRefreshToken);
 router.post('/logout', logout);
