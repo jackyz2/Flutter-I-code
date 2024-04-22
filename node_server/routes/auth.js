@@ -1,12 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const argon2 = require("argon2");
-const {errorHandler, withTransaction} = require("../util");
-const {HttpError} = require("../error");
 
+import * as controllers from '../controllers';
 
-
-
+/*
 const jwt = require("jsonwebtoken");
 const models = require("../models");
 
@@ -140,14 +137,10 @@ const validateRefreshToken = async (token) => {
     }
 };
 
-
-
-
-
-
-router.post('/signup', signUp)
-router.post('/login', login);
-router.post('/newactoken', newAccessToken);
-router.post('/newrftoken', newRefreshToken);
-router.post('/logout', logout);
+*/
+router.post('/signup', controllers.signUp)
+router.post('/login', controllers.login);
+router.post('/newactoken', controllers.createAccessToken);
+router.post('/newrftoken', controllers.createRefreshToken);
+router.post('/logout', controllers.logout);
 module.exports = router;
