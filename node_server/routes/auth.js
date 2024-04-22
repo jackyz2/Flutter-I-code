@@ -1,8 +1,6 @@
 const express = require('express')
 const router = express.Router()
-
-import * as controllers from '../controllers';
-
+const controllers = require('../controllers');
 /*
 const jwt = require("jsonwebtoken");
 const models = require("../models");

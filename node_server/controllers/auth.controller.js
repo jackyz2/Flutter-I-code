@@ -4,10 +4,7 @@ const {errorHandler, withTransaction} = require("../util");
 const {HttpError} = require("../error");
 const argon2 = require("argon2");
 
-const jwt = require("jsonwebtoken");
-const models = require("../models");
-
-export const signUp = errorHandler(withTransaction(async (req, res, session)=> {
+const signUp = errorHandler(withTransaction(async (req, res, session)=> {
     const userDoc = models.User({ 
         email: req.body.email,
         password: await argon2.hash(req.body.password),
@@ -28,7 +25,7 @@ export const signUp = errorHandler(withTransaction(async (req, res, session)=> {
     };
 }));
 
-export const login = errorHandler(withTransaction(async(req, res, session) => {
+const login = errorHandler(withTransaction(async(req, res, session) => {
     const userDoc = await models.User.findOne({email: req.body.email})
         .select('+password')
         .exec();
@@ -50,13 +47,13 @@ export const login = errorHandler(withTransaction(async(req, res, session) => {
     };
 }));
 
-export const logout = errorHandler(withTransaction(async (req, res, session) => {
+const logout = errorHandler(withTransaction(async (req, res, session) => {
     const refreshToken = await validateRefreshToken(req.body.refreshToken);
     await models.RefreshToken.deleteOne({_id: refreshToken.tokenId}, {session});
     return {success: true};
 }));
 
-export function createAccessToken(userId) {
+function createAccessToken(userId) {
     return jwt.sign({ 
         userId: userId
     }, process.env.ACCESS_TOKEN_SECRET, { 
@@ -64,7 +61,7 @@ export function createAccessToken(userId) {
     });
 }
 
-export function createRefreshToken(userId, refreshTokenId) {
+function createRefreshToken(userId, refreshTokenId) {
     return jwt.sign({ 
         userId: userId,
         tokenId: refreshTokenId
@@ -99,3 +96,11 @@ const verifyPassword = async (hashedpw, rawpw) => {
         throw new HttpError(401, 'Wrong username or password');
     }
 };
+
+module.exports = {
+    signUp,
+    login,
+    logout,
+    createAccessToken,
+    createRefreshToken
+}
