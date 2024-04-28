@@ -70,6 +70,40 @@ function createRefreshToken(userId, refreshTokenId) {
     });
 }
 
+const newRefreshToken = errorHandler(withTransaction(async (req, res, session) => {
+    const currentRefreshToken = await validateRefreshToken(req.body.refreshToken);
+    const refreshTokenDoc = models.RefreshToken({
+        owner: currentRefreshToken.userId
+    });
+
+    await refreshTokenDoc.save({session});
+    await models.RefreshToken.deleteOne({_id: currentRefreshToken.tokenId}, {session});
+
+    const refreshToken = createRefreshToken(currentRefreshToken.userId, refreshTokenDoc.id);
+    const accessToken = createAccessToken(currentRefreshToken.userId);
+
+    return {
+        id: currentRefreshToken.userId,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        //level: user.level
+    };
+}));
+
+const newAccessToken = errorHandler(async (req, res) => {
+    const refreshToken = await validateRefreshToken(req.body.refreshToken);
+    const accessToken = createAccessToken(refreshToken.userId);
+    let user = await models.User.findById(refreshToken.userId);
+    //print(user.email);
+    
+    return {
+        id: refreshToken.userId,
+        accessToken: accessToken,
+        refreshToken: req.body.refreshToken,
+        level: user.level
+    };
+});
+
 const validateRefreshToken = async (token) => {
     const decodeToken = () => {
         try {
