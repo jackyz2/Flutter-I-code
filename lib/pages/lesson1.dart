@@ -157,8 +157,8 @@ class _QuizFetchScreenState extends State<QuizFetchScreen> {
             return Center(child: Text('Error: ${snapshot.error.toString()}'));
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             // Data is fetched successfully and the list is not empty
-            Question currQuestion = snapshot.data![questionIndex]; 
-            bool isLastQuestion = questionIndex == snapshot.data!.length - 1;
+            //Question currQuestion = snapshot.data![questionIndex]; 
+            //bool isLastQuestion = questionIndex == snapshot.data!.length - 1;
             questions = snapshot.data!;
             return QuizScreen();
           } else {
@@ -253,6 +253,6 @@ return Padding(
                 
                 ],
               ),
-            );
+      );
   }
 }
