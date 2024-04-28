@@ -1,3 +1,4 @@
+const { Int32 } = require("mongodb");
 const mongoose = require("mongoose");
 
 let QuestionSchema = new mongoose.Schema({ 
@@ -5,6 +6,7 @@ let QuestionSchema = new mongoose.Schema({
     options: Array,
     imageUrl: String,
     category: String,
+    answer: String
 });
 
 const Question = mongoose.model("Question", QuestionSchema);

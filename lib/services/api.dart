@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_application_1/models/question_model.dart';
 class API {
-  static const baseUrl = "http://192.168.40.240:2000/api/";
+  static const baseUrl = "http://192.168.40.241:2000/api/";
   static var currentUserData = new FlutterSecureStorage();
   static bool containUser = false;
 
   static Future<bool> validate() async {
-  
     var refreshToken = await currentUserData.read(key: 'refreshToken');
-    
     if(refreshToken != null) {
       var url = Uri.parse("${baseUrl}auth/newactoken");
       var res = await http.post(url, headers: {"Content-Type": "application/json"}, // Set content type as JSON
@@ -62,8 +61,7 @@ static signUp(Map data) async {
         await currentUserData.write(key: 'id', value: json.decode(res.body)["id"]);
         await currentUserData.write(key: 'accessToken', value: json.decode(res.body)["accessToken"]);
         await currentUserData.write(key: 'refreshToken', value: json.decode(res.body)["refreshToken"]);
-          await currentUserData.write(key: 'level', value: json.decode(res.body)["level"].toString());
-      
+        await currentUserData.write(key: 'level', value: json.decode(res.body)["level"].toString());
         containUser = true;
     }
     else {
@@ -96,19 +94,18 @@ static signUp(Map data) async {
     }
   }
 
-  /*static sessionAuth() async {
-    var url = Uri.parse("${baseUrl}/auth/sessionauth");
+  static Future<List<Question>> parseQ(Map data) async{ 
+    var url = Uri.parse("${baseUrl}/parse/parseq");
     try{ 
-      final res = await http.post(url, body: currentUserData);
+      final res = await http.post(url, body:data);
       if(res.statusCode == 200) {
-        currentUserData = currentUserData;
-        return 1;
+        final List<dynamic> data = json.decode(res.body);
+        return data.map((e) => Question.fromMap(Map<String, dynamic>.from(e))).toList();
       }
-      else {
-        return 0;
-      }
-    } catch(e) {
+      return [];
+    } catch (e) {
       print(e.toString());
+      return [];
     }
-  }*/
+  }
 }

@@ -1,16 +1,43 @@
 
-class Question{
+import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/rendering.dart';
+
+class Question extends Equatable{
   //each question have an id and title
-   String? question;
+   final String questionTitle;
+
+   final String imageUrl;
+   final String category;
   //each question have choices
-   //Map<String, bool>? options;
-  
-  //Question constructor
-  /*Question(String s, Map<String, bool> map, {
-     this.question,
-     this.options,
-  });*/
-  Question(String s, {
-    this.question,
+   final List<String> options;
+   final String answer;
+
+  const Question({ 
+    required this.questionTitle,
+    required this.imageUrl,
+    required this.category,
+    required this.answer,
+    required this.options,
   });
+
+  @override 
+  List<Object> get props=> [ 
+    questionTitle,
+    imageUrl,
+    category,
+    options,
+    answer,
+  ];
+
+  factory Question.fromMap(Map<String, dynamic> map) {
+    //if(map == null) return null;
+    return Question( 
+      questionTitle: map['questionTitle'] ?? '',
+      answer: map['answer'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
+      category: map['category'] ?? '',
+      options: List<String>.from(map['options']??[]),
+    );
+  }
 }

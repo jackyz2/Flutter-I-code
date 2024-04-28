@@ -6,10 +6,12 @@ import 'package:flutter_application_1/pages/registerpage.dart';
 import 'package:flutter_application_1/pages/loginpage.dart';
 import 'package:flutter_application_1/pages/settingspage.dart';
 import 'package:flutter_application_1/services/api.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool isAuthenticated = await API.validate();
-  runApp(MyApp(isAuthenticated: isAuthenticated));
+  runApp(ProviderScope(child:MyApp(isAuthenticated: isAuthenticated)));
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  final screens = [const LearningPage(), ProfilePage(), SettingsPage()];
+  final screens = [LearningPage(), ProfilePage(), SettingsPage()];
   Color mainColor = const Color(0xFF252C4A);
   Color secondColor = const Color(0xFF117EEB);
   @override
@@ -60,9 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
         
       ),
     );
-    
   }
-
-  
 }
 
