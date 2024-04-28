@@ -135,6 +135,6 @@ module.exports = {
     signUp,
     login,
     logout,
-    createAccessToken,
-    createRefreshToken
+    newAccessToken,
+    newRefreshToken
 }
