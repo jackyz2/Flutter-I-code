@@ -21,7 +21,7 @@ const signUp = errorHandler(withTransaction(async (req, res, session)=> {
         id: userDoc.id,
         accessToken,
         refreshToken,
-        level: user.level
+        level: userDoc.level
     };
 }));
 
