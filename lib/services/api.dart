@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_application_1/models/question_model.dart';
 class API {
-  static const baseUrl = "http://192.168.40.241:2000/api/";
+  static const baseUrl = "http://192.168.3.94:2000/api/";
   static var currentUserData = new FlutterSecureStorage();
   static bool containUser = false;
 
