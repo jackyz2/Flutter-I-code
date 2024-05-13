@@ -16,6 +16,7 @@ class _LearningPageState extends State<LearningPage> {
         body:CustomScrollView(
           slivers: <Widget>[ 
             SliverAppBar( 
+              automaticallyImplyLeading: false,
               pinned: true,
               floating: true,
               expandedHeight: 160.0,
