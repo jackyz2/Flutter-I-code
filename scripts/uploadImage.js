@@ -15,11 +15,11 @@ async function insertImage() {
         const collection = db.collection('images');
 
         const fileData = fs.readFileSync(imagePath);
-        const base64Image = fileData.toString('base64');
+
 
         const result = await collection.insertOne({
-            image: base64Image,
-            description: 'An example image'
+            image: fileData,
+            description: 'Binary example'
         });
         console.log('Image inserted with _id:', result.insertedId);
     } catch (err) {
