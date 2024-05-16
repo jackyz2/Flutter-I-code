@@ -14,7 +14,14 @@ class ScoreScreen extends StatefulWidget {
 
 class _ScoreScreenState extends State<ScoreScreen> {
   late Future<String?> currentLevelFuture;
-
+  void updateLevel(newLevel) {
+    var data = {
+      "id": API.currentUserData.read(key: 'id'),
+      "accessToken": API.currentUserData.read(key: 'accessToken'),
+      "refreshToken": API.currentUserData.read(key: 'refreshToken'),
+      "level": newLevel
+    };
+  }
   @override
   void initState() {
     super.initState();
@@ -52,6 +59,16 @@ class _ScoreScreenState extends State<ScoreScreen> {
               
               String ScurrentLevel = IcurrentLevel.toString();
               await API.currentUserData.write(key: 'level', value: ScurrentLevel);
+              var refreshToken = await API.currentUserData.read(key: 'refreshToken');
+              print("line 63");
+              var data = {
+                "refreshToken": refreshToken,
+                "level": IcurrentLevel
+              };
+              //print(ScurrentLevel);
+              print("line 69");
+              await API.updateLevel(data);
+              print("line 69");
               Navigator.push(context,
                 MaterialPageRoute(builder: (context) => MyHomePage(title: 'I-code')),
               );

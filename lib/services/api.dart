@@ -108,4 +108,25 @@ static signUp(Map data) async {
       return [];
     }
   }
+
+  static Future<void> updateLevel(Map data) async {
+  var url = Uri.parse("${baseUrl}/parse/updatelevel");
+  try {
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(data),
+    );
+    if (response.statusCode != 200) {
+      print("Failed to update level. Status code: ${response.statusCode}");
+      print("Response body: ${response.body}");
+    } else {
+      print("Level updated successfully!");
+    }
+  } catch (e) {
+    print("Error updating level: ${e.toString()}");
+  }
 }
+}
+
+  

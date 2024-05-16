@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/lesson1.dart';
+import 'package:flutter_application_1/services/api.dart';
 import 'dart:math';
+
+int currentUserLevel = 0;
 
 class LearningPage extends StatefulWidget {
   const LearningPage({super.key});
@@ -9,6 +12,16 @@ class LearningPage extends StatefulWidget {
 }
 
 class _LearningPageState extends State<LearningPage> {
+  @override
+  void initState() {
+    super.initState();
+    _loadUserLevel();
+  }
+  Future<void> _loadUserLevel() async {
+    String? CUL = await API.currentUserData.read(key: 'level');
+    currentUserLevel = CUL != null ? int.parse(CUL) : 0; //numberString != null ? int.parse(numberString) : null;
+    setState(() {});  // This call to setState will trigger the widget to rebuild if needed
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,16 +42,16 @@ class _LearningPageState extends State<LearningPage> {
           ),
         ),
             manyLessons(
-                [lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, true),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, false),
-                lesson('images/es.png', '3', 'Lessons', Colors.orange[100]!, false),
+                [lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 0),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 1),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 2),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 3),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 4),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 5),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 6),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 7),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 8),
+                lesson('images/es.png',  'Lesson ', Colors.orange[100]!, 9),
                 ]
               ),
           ])
@@ -68,7 +81,11 @@ class _LearningPageState extends State<LearningPage> {
 
   }
 
-  Widget lesson(String image, String number, String title, Color color, bool Active) {
+  Widget lesson(String image, String title, Color color, int level) {
+    bool Active = level <= currentUserLevel + 1;
+    bool Clickable = level == currentUserLevel + 1;
+    String completeTitle = title + level.toString();
+    //double circularlevel = 
     return Container(
       child: Column(
         children: <Widget>[
@@ -81,7 +98,7 @@ class _LearningPageState extends State<LearningPage> {
                   backgroundColor: Colors.grey[300],
                   valueColor:
                       AlwaysStoppedAnimation<Color>(Colors.yellow[600]!),
-                  value: Random().nextDouble(),
+                  value: level <= currentUserLevel ? 1.0 : 0.0,
                   strokeWidth: 60,
                 ),
               ),
@@ -104,11 +121,13 @@ class _LearningPageState extends State<LearningPage> {
               ),
               GestureDetector( 
                 onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => QuizFetchScreen()),
-                          );
+                            if(Clickable) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QuizFetchScreen()),
+                              );
+                            }
                         },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.0), //or 15.0
@@ -131,21 +150,11 @@ class _LearningPageState extends State<LearningPage> {
               
             ],
           ),
-          Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              
-              Text(
-                number,
-                style: TextStyle(color: Colors.deepOrangeAccent),
-              ),
-            ],
-          ),
           SizedBox(
             height: 10,
           ),
           Text(
-            title,
+            completeTitle,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],

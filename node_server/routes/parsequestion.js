@@ -38,5 +38,25 @@ const jwt = require("jsonwebtoken");
     return res.json(parsedQuestions);
 }));
 
+const updateLevel = errorHandler(withTransaction(async(req, res, session) => { 
+  const decodeToken = (token) => { 
+    try { 
+      return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    } catch(err) {
+      throw new HttpError(401, 'Unauthorised');
+    }
+  }
+
+  const refreshToken = decodeToken(req.body.refreshToken);
+  const newLevel = req.body.level;
+  console.log(newLevel);
+  //const InewLevel = parseInt(newLevel);
+  let user = await models.User.findById(refreshToken.userId);
+ 
+  user.level = newLevel;
+  await user.save({session});
+}))
+
+router.post('/updatelevel', updateLevel)
 router.post('/parseq', parseQ)
 module.exports = router;
