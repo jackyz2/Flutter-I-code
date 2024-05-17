@@ -6,6 +6,7 @@ import 'package:flutter_application_1/pages/scorescreen.dart';
 
 Future<List<Question>>? fetchedQuestions;
 List<Question>? questions;
+List<Image?> questionImages = [];
 
 Future<List<Question>> fetchQuizQuestions() async {
   var refreshToken = await API.currentUserData.read(key: 'refreshToken');
@@ -127,6 +128,17 @@ class QuizFetchScreen extends StatefulWidget {
 }
 
 class _QuizFetchScreenState extends State<QuizFetchScreen> {
+  void imageListBuilder(List<Question>? questions) async {
+    for(var question in questions!) {
+      if(question.imageUrl != "") {
+        Image? image = await API.parseImage(question.imageUrl);
+        questionImages.add(image);
+      } else { 
+        questionImages.add(null);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     //final question = questions[0];
@@ -154,6 +166,7 @@ class _QuizFetchScreenState extends State<QuizFetchScreen> {
             //Question currQuestion = snapshot.data![questionIndex];
             //bool isLastQuestion = questionIndex == snapshot.data!.length - 1;
             questions = snapshot.data!;
+            imageListBuilder(questions);
             return QuizScreen();
           } else {
             // Handle the case where there is no data returned
@@ -192,7 +205,16 @@ class _QuizScreenState extends State<QuizScreen> {
             currQuestion.questionTitle,
             style: const TextStyle(fontSize: 25, color: Colors.white),
             textAlign: TextAlign.center,
-          ), // Display the question
+          ),// Display the question
+          if(questionImages[questionIndex] != null) 
+            Center( 
+              child: SizedBox( 
+                child: questionImages[questionIndex],
+                height: 300,
+                width: 300,
+              )
+            ),
+          
           ListView.builder(
             shrinkWrap: true,
             itemCount: currQuestion.options.length,

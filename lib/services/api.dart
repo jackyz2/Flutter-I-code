@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_application_1/models/question_model.dart';
@@ -127,6 +128,23 @@ static signUp(Map data) async {
     print("Error updating level: ${e.toString()}");
   }
 }
+
+  static Future<Image?> parseImage(String id) async {
+    var url = Uri.parse("${baseUrl}/image/image/${id}");
+    try {
+      final response = await http.get(url);
+      if(response.statusCode == 200) {
+        return Image.memory(response.bodyBytes);
+      }
+      else {
+        print("Unable to parse image");
+      }
+    } catch (e) { 
+      print("Error parsing image: ${e.toString()}");
+      
+      return null;
+    }
+  }
 }
 
   

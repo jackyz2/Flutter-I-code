@@ -4,7 +4,7 @@ const fs = require('fs');
 const url = 'mongodb+srv://jackyz2:qiqi050621@i-code.9efpecs.mongodb.net/flutter?retryWrites=true&w=majority';
 const dbName = 'flutter';
 
-const imagePath = 'D:/Flutter-I-code/assets/images/cpp_bg.jpg';
+const imagePath = '/Users/jackyzhang/development/i-code/assets/images/tree1.jpg';
 
 const client = new MongoClient(url);
 
