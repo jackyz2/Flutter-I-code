@@ -1,12 +1,13 @@
+require('dotenv').config({path: '../.env'})
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 
-const url = 'mongodb+srv://jackyz2:qiqi050621@i-code.9efpecs.mongodb.net/flutter?retryWrites=true&w=majority';
+const url = process.env.DATABASE_URL;
 const dbName = 'flutter';
 
 const imagePath = 'D:/Flutter-I-code/assets/images/cpp_bg.jpg';
 
-const client = new MongoClient(url);
+const client = new MongoClient(url, { useNewUrlParser: true });
 
 async function insertImage() {
     try {
