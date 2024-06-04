@@ -14,6 +14,8 @@ Future<List<Question>> fetchQuizQuestions() async {
   return API.parseQ(data);
 }
 
+
+
 class ProgressBar extends StatefulWidget {
   final int currentIndex;
   final int totalQuestions;
@@ -127,8 +129,7 @@ class QuizFetchScreen extends StatefulWidget {
   State<QuizFetchScreen> createState() => _QuizFetchScreenState();
 }
 
-class _QuizFetchScreenState extends State<QuizFetchScreen> {
-  void imageListBuilder(List<Question>? questions) async {
+Future<void> imageListBuilder(List<Question>? questions) async {
     for(var question in questions!) {
       if(question.imageUrl != "") {
         Image? image = await API.parseImage(question.imageUrl);
@@ -138,6 +139,16 @@ class _QuizFetchScreenState extends State<QuizFetchScreen> {
       }
     }
   }
+
+Future<List<Question>?> fetchAndBuildQuiz() async {
+  fetchedQuestions = fetchQuizQuestions();
+  questions = await fetchedQuestions;
+  await imageListBuilder(questions);
+  return questions;
+}
+
+class _QuizFetchScreenState extends State<QuizFetchScreen> {
+  
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +163,8 @@ class _QuizFetchScreenState extends State<QuizFetchScreen> {
           end: Alignment.bottomRight,
         ),
       ),
-      child: FutureBuilder<List<Question>>(
-        future: fetchQuizQuestions(),
+      child: FutureBuilder<List<Question>?>(
+        future: fetchAndBuildQuiz(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Display a loading indicator while the data is being fetched
@@ -166,7 +177,7 @@ class _QuizFetchScreenState extends State<QuizFetchScreen> {
             //Question currQuestion = snapshot.data![questionIndex];
             //bool isLastQuestion = questionIndex == snapshot.data!.length - 1;
             questions = snapshot.data!;
-            imageListBuilder(questions);
+            //imageListBuilder(questions);
             return QuizScreen();
           } else {
             // Handle the case where there is no data returned
@@ -194,8 +205,10 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     Question currQuestion = questions![questionIndex];
-    return Padding(
+    return Padding( 
       padding: const EdgeInsets.all(24.0),
+      child: SingleChildScrollView(
+      
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -287,6 +300,8 @@ class _QuizScreenState extends State<QuizScreen> {
           ),
         ],
       ),
-    );
+    )
+   );
+    
   }
 }

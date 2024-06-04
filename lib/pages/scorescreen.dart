@@ -25,9 +25,45 @@ class _ScoreScreenState extends State<ScoreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Quiz Score')),
-      body: Column(children: [
-        Text('Your Score: ${widget.score}', style: TextStyle(fontSize: 24)),
+      appBar: 
+      
+      PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color.fromARGB(255, 137, 188, 255), Color.fromARGB(255, 108, 161, 240)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text('Quiz Score'), backgroundColor: Colors.transparent))
+      ) ,
+      body: Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color.fromARGB(255, 137, 188, 255), Color(0xFF0652C5)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        Text('Your Score: ${widget.score}', style: TextStyle(
+          fontSize: 50,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.5,
+          shadows: [
+            Shadow(
+              color: Colors.black.withOpacity(0.5)
+            )
+          ])),
         SizedBox(height: 20),
         FutureBuilder<String?>(
           future: currentLevelFuture,
@@ -63,6 +99,8 @@ class _ScoreScreenState extends State<ScoreScreen> {
             },
             child: Text('Back to Learning Page'))
       ]),
+      
+      )
     );
   }
 }
