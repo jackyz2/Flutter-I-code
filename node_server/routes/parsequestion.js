@@ -3,21 +3,18 @@ const router = express.Router()
 const {errorHandler, withTransaction} = require("../util");
 const {HttpError} = require("../error");
 const models = require("../models");
-
-const jwt = require("jsonwebtoken");
+const {verifyTokenAndFetchUser} = require("../controllers/verifyAccessToken")
+//const jwt = require("jsonwebtoken");
   
   const parseQ = errorHandler(withTransaction(async(req, res, session) => {
-    const decodeToken = (token) => {
-      try {
-          return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-      } catch(err) {
-          // err
-          throw new HttpError(401, 'Unauthorised');
-      }
-  }
 
-    const refreshToken = decodeToken(req.body.refreshToken);
-    let user = await models.User.findById(refreshToken.userId);
+    const { accessToken, refreshToken } = req.body;
+
+    const result = await verifyTokenAndFetchUser(accessToken, refreshToken);
+    let user = result.user;
+    const newAccessToken = result.accessToken;
+  
+
     console.log("User:", user);
     const userLevel = user.level;
     console.log("UserLevel:", userLevel);
@@ -35,7 +32,10 @@ const jwt = require("jsonwebtoken");
       category: q.category,
       answer: q.answer
     }));
-    return res.json(parsedQuestions);
+    return res.json({
+      parsedQuestions,
+      newAccessToken: newAccessToken || null,
+    });
 }));
 
 router.post('/parseq', parseQ)

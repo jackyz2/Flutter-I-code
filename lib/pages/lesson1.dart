@@ -9,7 +9,8 @@ List<Question>? questions;
 
 Future<List<Question>> fetchQuizQuestions() async {
   var refreshToken = await API.currentUserData.read(key: 'refreshToken');
-  var data = {"refreshToken": refreshToken};
+  var accessToken = await API.currentUserData.read(key: 'accessToken');
+  var data = {"refreshToken": refreshToken, "accessToken": accessToken};
   return API.parseQ(data);
 }
 

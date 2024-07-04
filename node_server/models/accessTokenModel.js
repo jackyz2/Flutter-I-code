@@ -1,19 +1,19 @@
 const mongoose = require("mongoose");
 
-let refreshTokenSchema = new mongoose.Schema({ 
+let accessTokenSchema = new mongoose.Schema({ 
     owner: { 
         type: mongoose.Schema.Types.ObjectId, ref: 'User'
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: '30d' 
+        expires: '10m' 
     },
     tokenType: {
         type: String,
-        default:"refreshToken"
+        default:"accessToken"
     }
 })
 
-const RefreshToken = mongoose.model("RefreshToken", refreshTokenSchema);
-module.exports = RefreshToken
+const accessToken = mongoose.model("AccessToken", accessTokenSchema);
+module.exports = accessToken
