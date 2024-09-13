@@ -33,6 +33,6 @@ app.use('/api', routes)
 
 
 
-app.listen(2000, ()=>{
-    console.log("Connected to server at 2000");
+app.listen(8080, ()=>{
+    console.log("Connected to server at 8080");
 });
