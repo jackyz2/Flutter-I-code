@@ -14,6 +14,7 @@ class NodeTemplate {
   int value = 0;
   bool solid = false;
   Color color = Colors.grey;
+  bool isCorrect = false;
 
   NodeTemplate();
 }
@@ -23,9 +24,20 @@ class _MyAppState extends State<MyApp> {
   int nodeValue = 0;
   List<Color> boxColors = List<Color>.filled(15, Colors.grey);
   List<NodeTemplate> treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
-
+  List<int> answers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+  
+  double screenWidth = 0;
+  double screenHeight = 0;
+  double WstretchConstant = 0;
+  double HstretchConstant = 0;
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+    WstretchConstant = screenWidth / 480;
+    HstretchConstant = screenHeight / 932;
+    //print(screenWidth);
+    //print(screenHeight);
     return Scaffold(
       appBar: AppBar(
         title: Text('Draggable Blue Box'),
@@ -45,7 +57,7 @@ class _MyAppState extends State<MyApp> {
                       buildDragTarget(0),
                     ],
                   ),
-                  SizedBox(height: 16.0), // For spacing between levels
+                  SizedBox(height: 16.0 * HstretchConstant), // For spacing between levels
 
                   // Level 2 - 2 boxes
                   Row(
@@ -56,7 +68,7 @@ class _MyAppState extends State<MyApp> {
                       buildDragTarget(2),
                     ],
                   ),
-                  SizedBox(height: 16.0), // For spacing between levels
+                  SizedBox(height: 16.0 * HstretchConstant), // For spacing between levels
 
                   // Level 3 - 4 boxes
                   Row(
@@ -71,7 +83,7 @@ class _MyAppState extends State<MyApp> {
                       buildDragTarget(6),
                     ],
                   ),
-                  SizedBox(height: 16.0), // For spacing between levels
+                  SizedBox(height: 16.0 * HstretchConstant), // For spacing between levels
 
                   // Level 4 - 8 boxes
                   Row(
@@ -96,24 +108,24 @@ class _MyAppState extends State<MyApp> {
           Draggable<int>(
             data: nodeValue,
             feedback: Container(
-              width: 50.0,
-              height: 50.0,
+              width: 50.0 * WstretchConstant,
+              height: 50.0 * HstretchConstant,
               color: Colors.blue.withOpacity(0.7),
               child: Center(child: Text(nodeValue.toString())),
             ),
             childWhenDragging: Container(
-              width: 50.0,
-              height: 50.0,
+              width: 50.0 * WstretchConstant,
+              height: 50.0 * HstretchConstant,
               color: Colors.blue.withOpacity(0.3),
             ),
             child: Container(
-              width: 50.0,
-              height: 50.0,
+              width: 50.0 * WstretchConstant,
+              height: 50.0 * HstretchConstant,
               color: Colors.blue,
               child: Center(child: Text(nodeValue.toString())),
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 30 * HstretchConstant),
         ],
       ),
 
@@ -159,6 +171,11 @@ class _MyAppState extends State<MyApp> {
 
   // Function to build a DragTarget for the grey boxes
   Widget buildDragTarget(int index) {
+    if(treeNodes[index].value == answers[index]) {
+      treeNodes[index].isCorrect = true;
+    } else {
+      treeNodes[index].isCorrect = false;
+    }
     return GestureDetector(
       onLongPress: () {
         setState(() {
@@ -174,13 +191,18 @@ class _MyAppState extends State<MyApp> {
             treeNodes[index].color = Colors.blue; // Change color when blue box is dropped
             treeNodes[index].value = data;
             treeNodes[index].solid = true;
+            if (treeNodes[index].value == answers[index]) {
+              treeNodes[index].isCorrect = true;
+            } else {
+              treeNodes[index].isCorrect = false;
+            }
           });
         },
         builder: (context, candidateData, rejectedData) {
           return Container(
             
-            width: 50.0,
-            height: 70.0,
+            width: 50.0 * WstretchConstant,
+            height: 70.0 * HstretchConstant,
             margin: EdgeInsets.symmetric(horizontal: 4.0),
             decoration: BoxDecoration(
             color: treeNodes[index].color, // Dynamic color based on state
