@@ -13,7 +13,7 @@ class NodeTemplate {
   int id = 0;
   int value = 0;
   bool solid = false;
-  Color color = Colors.grey;
+  Color color = Color.fromARGB(255, 242, 242, 242);
   bool isCorrect = false;
 
   NodeTemplate();
@@ -22,7 +22,7 @@ class NodeTemplate {
 class _MyAppState extends State<MyApp> {
   // This list holds the color of each box, initially all are grey.
   int nodeValue = 0;
-  List<Color> boxColors = List<Color>.filled(15, Colors.grey);
+  //List<Color> boxColors = List<Color>.filled(15, Colors.grey);
   List<NodeTemplate> treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
   List<int> answers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
   
@@ -57,33 +57,33 @@ class _MyAppState extends State<MyApp> {
                       buildDragTarget(0),
                     ],
                   ),
-                  SizedBox(height: 16.0 * HstretchConstant), // For spacing between levels
+                  SizedBox(height: 25.0 * HstretchConstant), // For spacing between levels
 
                   // Level 2 - 2 boxes
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       buildDragTarget(1),
-                      SizedBox(width: 100),
+                      SizedBox(width: 100 * WstretchConstant),
                       buildDragTarget(2),
                     ],
                   ),
-                  SizedBox(height: 16.0 * HstretchConstant), // For spacing between levels
+                  SizedBox(height: 25.0 * HstretchConstant), // For spacing between levels
 
                   // Level 3 - 4 boxes
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       buildDragTarget(3),
-                      SizedBox(width: 50),
+                      SizedBox(width: 43 * WstretchConstant),
                       buildDragTarget(4),
-                      SizedBox(width: 50),
+                      SizedBox(width: 43 * WstretchConstant),
                       buildDragTarget(5),
-                      SizedBox(width: 50),
+                      SizedBox(width: 43 * WstretchConstant),
                       buildDragTarget(6),
                     ],
                   ),
-                  SizedBox(height: 16.0 * HstretchConstant), // For spacing between levels
+                  SizedBox(height: 25.0 * HstretchConstant), // For spacing between levels
 
                   // Level 4 - 8 boxes
                   Row(
@@ -181,7 +181,7 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           treeNodes[index].id = index;
           treeNodes[index].value = 0;
-          treeNodes[index].color = Colors.grey;
+          treeNodes[index].color = Color.fromARGB(255, 242, 242, 242);
           treeNodes[index].solid = false;
         });
       },
@@ -203,7 +203,7 @@ class _MyAppState extends State<MyApp> {
             
             width: 50.0 * WstretchConstant,
             height: 70.0 * HstretchConstant,
-            margin: EdgeInsets.symmetric(horizontal: 4.0),
+            margin: EdgeInsets.symmetric(horizontal: 4.0 * WstretchConstant),
             decoration: BoxDecoration(
             color: treeNodes[index].color, // Dynamic color based on state
             shape: BoxShape.circle, // Makes the container a circle
@@ -211,7 +211,7 @@ class _MyAppState extends State<MyApp> {
             //color: treeNodes[index].color, // Dynamic color based on state
             child: Center(
               child: Text(
-                treeNodes[index].value.toString(),
+                treeNodes[index].value == 0 ? "" : treeNodes[index].value.toString(),
                 style: TextStyle(fontSize: 10),
               ),
             ),
