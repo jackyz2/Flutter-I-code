@@ -46,7 +46,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color.fromARGB(255, 137, 188, 255), Color(0xFF0652C5)],
+          colors: [Color.fromARGB(255, 137, 188, 255), Color.fromARGB(255, 132, 169, 225)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

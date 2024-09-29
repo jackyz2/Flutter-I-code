@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(home: MyApp())); // Wrap MyApp with MaterialApp
-}
 
-class MyApp extends StatefulWidget {
+class TreePage extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  State<TreePage> createState() => _TreePageState();
 }
 
 class NodeTemplate {
@@ -19,7 +16,7 @@ class NodeTemplate {
   NodeTemplate();
 }
 
-class _MyAppState extends State<MyApp> {
+class _TreePageState extends State<TreePage> {
   // This list holds the color of each box, initially all are grey.
   int nodeValue = 0;
   //List<Color> boxColors = List<Color>.filled(15, Colors.grey);
@@ -42,7 +39,9 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         title: Text('Draggable Blue Box'),
       ),
-      body: Column(
+      body: ConstrainedBox(
+        constraints: BoxConstraints.expand(),
+        child: Column(
         children: [
           // Binary tree structure
           Expanded(
@@ -75,11 +74,11 @@ class _MyAppState extends State<MyApp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       buildDragTarget(3),
-                      SizedBox(width: 43 * WstretchConstant),
+                      SizedBox(width: 41 * WstretchConstant),
                       buildDragTarget(4),
-                      SizedBox(width: 43 * WstretchConstant),
+                      SizedBox(width: 41 * WstretchConstant),
                       buildDragTarget(5),
-                      SizedBox(width: 43 * WstretchConstant),
+                      SizedBox(width: 41 * WstretchConstant),
                       buildDragTarget(6),
                     ],
                   ),
@@ -103,7 +102,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
-
+          
           // Draggable blue box at the bottom
           Draggable<int>(
             data: nodeValue,
@@ -126,7 +125,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           SizedBox(height: 30 * HstretchConstant),
+          ElevatedButton(onPressed: checkAnswers, child: Text("Check Answers")),
         ],
+      ),
       ),
 
       // Use the built-in floatingActionButton property
@@ -138,6 +139,16 @@ class _MyAppState extends State<MyApp> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void checkAnswers() {
+    setState(() {
+      for (int i = 0; i < treeNodes.length; i++) {
+        if(!treeNodes[i].isCorrect) {
+          treeNodes[i].color = Colors.red;
+        }
+      }
+    });
   }
 
   void _showInputDialog(BuildContext context) {
@@ -176,6 +187,19 @@ class _MyAppState extends State<MyApp> {
     } else {
       treeNodes[index].isCorrect = false;
     }
+    double sizeConstant = 1;
+    if(index == 0){
+      sizeConstant = 1.5;
+    }
+    else if(index == 1 || index == 2){
+      sizeConstant = 1.3;
+    }
+    else if(index == 3 || index == 4 || index == 5 || index == 6){
+      sizeConstant = 1.1;
+    }
+    else if(index == 7 || index == 8 || index == 9 || index == 10 || index == 11 || index == 12 || index == 13 || index == 14){
+      sizeConstant = 1;
+    }
     return GestureDetector(
       onLongPress: () {
         setState(() {
@@ -201,8 +225,8 @@ class _MyAppState extends State<MyApp> {
         builder: (context, candidateData, rejectedData) {
           return Container(
             
-            width: 50.0 * WstretchConstant,
-            height: 70.0 * HstretchConstant,
+            width: sizeConstant * 50.0 * WstretchConstant,
+            height: sizeConstant * 50.0 * HstretchConstant,
             margin: EdgeInsets.symmetric(horizontal: 4.0 * WstretchConstant),
             decoration: BoxDecoration(
             color: treeNodes[index].color, // Dynamic color based on state
@@ -212,11 +236,12 @@ class _MyAppState extends State<MyApp> {
             child: Center(
               child: Text(
                 treeNodes[index].value == 0 ? "" : treeNodes[index].value.toString(),
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 15 * sizeConstant, color: Colors.white),
               ),
             ),
           );
         },
+        
       ),
     );
   }

@@ -1,7 +1,7 @@
 
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/rendering.dart';
+//import 'package:flutter/rendering.dart';
 
 class Question extends Equatable{
   //each question have an id and title
@@ -12,6 +12,8 @@ class Question extends Equatable{
   //each question have choices
    final List<String> options;
    final String answer;
+  //check whether the question is a tree question or not
+   final bool isTree;
 
   const Question({ 
     required this.questionTitle,
@@ -19,6 +21,7 @@ class Question extends Equatable{
     required this.category,
     required this.answer,
     required this.options,
+    required this.isTree,
   });
 
   @override 
@@ -28,6 +31,7 @@ class Question extends Equatable{
     category,
     options,
     answer,
+    isTree,
   ];
 
   factory Question.fromMap(Map<String, dynamic> map) {
@@ -38,6 +42,7 @@ class Question extends Equatable{
       imageUrl: map['imageUrl'] ?? '',
       category: map['category'] ?? '',
       options: List<String>.from(map['options']??[]),
+      isTree: map['isTree'] ?? false,
     );
   }
 }

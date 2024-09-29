@@ -33,7 +33,8 @@ const jwt = require("jsonwebtoken");
       options: q.options,
       imageUrl: q.imageUrl,
       category: q.category,
-      answer: q.answer
+      answer: q.answer,
+      isTree: q.isTree
     }));
     return res.json(parsedQuestions);
 }));

@@ -6,7 +6,8 @@ let QuestionSchema = new mongoose.Schema({
     options: Array,
     imageUrl: String,
     category: String,
-    answer: String
+    answer: String,
+    isTree: Boolean,
 });
 
 const Question = mongoose.model("Question", QuestionSchema);
