@@ -1,17 +1,11 @@
 # I-code
 
-A new Flutter project.
+An application where students can refresh their core cs concepts right on their palm. 
 
-## Getting Started
+First you can create a account by using email and password. Then the app can save your progress.
 
-This project is a starting point for a Flutter application.
+Currently there are two types of questions, multiple choice and interactive tree questions. A demo video is shown below:
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+https://github.com/user-attachments/assets/2cb00ac4-b0d7-4f5f-913b-a9e5d4c7e3dc
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# Flutter-I-code
