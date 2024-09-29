@@ -599,6 +599,9 @@ class _QuizScreenState extends State<QuizScreen> {
           correct = 0;
           node.color = Colors.red;
         }
+        else {
+          node.color = Colors.green;
+        }
       }
       score += correct;
     });
