@@ -19,11 +19,11 @@ const jwt = require("jsonwebtoken");
     const refreshToken = decodeToken(req.body.refreshToken);
     let user = await models.User.findById(refreshToken.userId);
     console.log("User:", user);
-    const userLevel = user.level;
+    const userLevel = user.level + 1;
     console.log("UserLevel:", userLevel);
     let questions = await models.Question.aggregate([ 
       {$match: {category: userLevel.toString()}},
-      {$sample: {size: 2}}
+      {$sample: {size: 5}}
     ]);
 
     console.log("Question:", questions);

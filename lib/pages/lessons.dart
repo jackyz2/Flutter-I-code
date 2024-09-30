@@ -261,7 +261,10 @@ class _QuizScreenState extends State<QuizScreen> {
             
             buildTreeQuestion(currQuestion.options.map(int.parse).toList())
           else
-            buildMultipleChoiceQuestion(currQuestion),
+            //SingleChildScrollView(
+              //child:
+              buildMultipleChoiceQuestion(currQuestion),
+            //)
         ],
       ),
     //),
@@ -269,95 +272,110 @@ class _QuizScreenState extends State<QuizScreen> {
 }
 
   Widget buildMultipleChoiceQuestion(Question currQuestion) {
-    return Padding(
-      padding: EdgeInsets.all(0.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          if(questionImages[questionIndex] != null)
-            Center( 
-              child: SizedBox( 
-                child: questionImages[questionIndex],
-                height: 300,
-                width: 300,
-              )
-            ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: currQuestion.options.length,
-            itemBuilder: (context, index) {
-              bool isSelected = selectedAnswerIndex == index;
-              return GestureDetector(
-                onTap: checked
-                    ? null
-                    : () {
-                        setState(() {
-                          selectedAnswerIndex = index;
-                        });
-                      },
-                child: AnswerCard(
-                  currentIndex: index,
-                  question: currQuestion.options[index],
-                  isSelected: isSelected,
-                  selectedAnswerIndex: selectedAnswerIndex,
-                  correctAnswer: currQuestion.answer,
-                  check: checked,
+  return Expanded(
+    child: SingleChildScrollView(  // Allows the entire content to scroll
+      child: Padding(
+        padding: EdgeInsets.all(0.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (questionImages[questionIndex] != null)
+              Center(
+                child: SizedBox(
+                  child: questionImages[questionIndex],
+                  height: 250,
+                  width: 250,
                 ),
-              );
-            },
-          ),
-          SizedBox(height: 30 * HstretchConstant),
-          AbsorbPointer( 
-            absorbing: selectedAnswerIndex == null,
-            child: GestureDetector( 
-              onTap: !checked
-                  ? () {
-                      if (selectedAnswerIndex != null) {
-                        if (currQuestion.options[selectedAnswerIndex!] == currQuestion.answer) {
-                          ++score;
-                        }
-                      }
-                      setState(() {
-                        checked = true;
-                        buttonText = "Continue";
-                      });
-                    }
-                  : questionIndex == questions!.length - 1
-                      ? () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ScoreScreen(score: score)),
-                          );
-                        }
+              ),
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),  // Prevent ListView from scrolling independently
+              shrinkWrap: true,
+              itemCount: currQuestion.options.length,
+              itemBuilder: (context, index) {
+                bool isSelected = selectedAnswerIndex == index;
+                return GestureDetector(
+                  onTap: checked
+                      ? null
                       : () {
                           setState(() {
-                            ++questionIndex;
-                            selectedAnswerIndex = null;
-                            buttonText = "Check Answer";
-                            checked = false;
-                            currQuestion = questions![questionIndex];
+                            selectedAnswerIndex = index;
                           });
                         },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: selectedAnswerIndex == null ? Colors.grey[400] : Colors.lightBlue[200],
-                ),
-                child: Center(
-                  child: Text(
-                    buttonText,
-                    style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.none),
+                  child: AnswerCard(
+                    currentIndex: index,
+                    question: currQuestion.options[index],
+                    isSelected: isSelected,
+                    selectedAnswerIndex: selectedAnswerIndex,
+                    correctAnswer: currQuestion.answer,
+                    check: checked,
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 30 * HstretchConstant),
+            AbsorbPointer(
+              absorbing: selectedAnswerIndex == null,
+              child: GestureDetector(
+                onTap: !checked
+                    ? () {
+                        if (selectedAnswerIndex != null) {
+                          if (currQuestion.options[selectedAnswerIndex!] ==
+                              currQuestion.answer) {
+                            ++score;
+                          }
+                        }
+                        setState(() {
+                          checked = true;
+                          buttonText = "Continue";
+                        });
+                      }
+                    : questionIndex == questions!.length - 1
+                        ? () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ScoreScreen(score: score),
+                              ),
+                            );
+                          }
+                        : () {
+                            setState(() {
+                              ++questionIndex;
+                              selectedAnswerIndex = null;
+                              buttonText = "Check Answer";
+                              checked = false;
+                              currQuestion = questions![questionIndex];
+                            });
+                          },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: selectedAnswerIndex == null
+                        ? Colors.grey[400]
+                        : Colors.lightBlue[200],
+                  ),
+                  child: Center(
+                    child: Text(
+                      buttonText,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget buildTreeQuestion(List<int> answers) {
   //int nodeValue = 0;
