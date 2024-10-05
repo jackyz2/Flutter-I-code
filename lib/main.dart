@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/authpage.dart';
 import 'package:flutter_application_1/pages/profilepage.dart';
@@ -8,12 +9,13 @@ import 'package:flutter_application_1/pages/settingspage.dart';
 import 'package:flutter_application_1/pages/treetest.dart';
 import 'package:flutter_application_1/services/api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_application_1/pages/randomPractice.dart';
 //import 'package:flutter_application_1/pages/testpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool isAuthenticated = await API.validate();
-  runApp(ProviderScope(child:MyApp(isAuthenticated: isAuthenticated)));
+  runApp(ProviderScope(child: MyApp(isAuthenticated: isAuthenticated)));
 }
 
 class MyApp extends StatelessWidget {
@@ -38,32 +40,56 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  final screens = [LearningPage(), ProfilePage(), TreePage()];
+  final screens = [
+    LearningPage(),
+    ProfilePage(),
+    ChoosePage(),
+    TreePage()
+  ];
   Color mainColor = Color.fromARGB(255, 91, 112, 204);
   Color secondColor = Color.fromARGB(255, 152, 195, 239);
+  Color Background_white = Color.fromARGB(255, 251, 251, 251);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor,
-      body: IndexedStack( 
+      body: IndexedStack(
         index: currentPageIndex,
         children: screens,
       ),
-      bottomNavigationBar: BottomNavigationBar( 
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Background_white, 
+        selectedItemColor: const Color.fromARGB(255, 26, 26, 26),
+        unselectedItemColor: Colors.black54, 
+        selectedFontSize: 16,
+        unselectedFontSize: 14,
         onTap: (index) {
-            setState(() {
-              currentPageIndex = index;
-            });
+          setState(() {
+            currentPageIndex = index;
+          });
         },
         currentIndex: currentPageIndex,
-        items: const <BottomNavigationBarItem>[ 
-           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'learn',),
-           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile',),
-           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings',),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Learn',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.wechat),
+            label: 'Practice',
+          ),
         ],
-        
       ),
     );
   }
 }
-
