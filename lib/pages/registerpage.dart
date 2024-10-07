@@ -131,10 +131,11 @@ class RegisterPage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           registerUser();
-                          Navigator.push(
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ProfilePage()),
+                                builder: (context) => LoginPage()),
+                            (route) => false,
                           );
                         },
                         child: Container(

@@ -8,7 +8,7 @@ const signUp = errorHandler(withTransaction(async (req, res, session)=> {
     const userDoc = models.User({ 
         email: req.body.email,
         password: await argon2.hash(req.body.password),
-        level: 0
+        level: -1
     });
     const refreshTokenDoc = models.RefreshToken({ 
         owner: userDoc.id

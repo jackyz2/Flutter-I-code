@@ -44,8 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
     LearningPage(),
     ProfilePage(),
     ChoosePage(),
-    TreePage()
+    //TreePage()
   ];
+  
   Color mainColor = Color.fromARGB(255, 91, 112, 204);
   Color secondColor = Color.fromARGB(255, 152, 195, 239);
   Color Background_white = Color.fromARGB(255, 251, 251, 251);
@@ -80,10 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+          
           BottomNavigationBarItem(
             icon: Icon(Icons.wechat),
             label: 'Practice',

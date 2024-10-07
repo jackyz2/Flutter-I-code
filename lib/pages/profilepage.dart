@@ -16,9 +16,8 @@ void logUserOut(context) async{
 }
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      
-      body: Container(
+    return 
+    Container(
         //padding: EdgeInsets.symmetric(vertical: 30),
         color: Colors.lightBlue[200],
         child: Column(
@@ -80,8 +79,6 @@ void logUserOut(context) async{
             ),
           ],
         ),
-      ),
-      
       ); // This trailing comma makes auto-formatting nicer for build methods.
   }
 }
