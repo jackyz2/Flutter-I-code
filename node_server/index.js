@@ -14,7 +14,7 @@ app.use(express.urlencoded({
 
 
 
-const uri = "mongodb+srv://jackyz2:qiqi050621@i-code.9efpecs.mongodb.net/flutter";
+const uri = process.env.DATABASE_URL;
 
 
 async function connect() {
