@@ -9,7 +9,7 @@ import 'package:flutter_application_1/pages/treescreen.dart';
 
 Future<List<Question>>? fetchedQuestions;
 List<Question>? questions;
-List<Image?> questionImages = [];
+//List<Image?> questionImages = [];
 
 Future<List<Question>> fetchQuizQuestions() async {
   var refreshToken = await API.currentUserData.read(key: 'refreshToken');
@@ -136,7 +136,7 @@ class QuizFetchScreen extends StatefulWidget {
   State<QuizFetchScreen> createState() => _QuizFetchScreenState();
 }
 
-Future<void> imageListBuilder(List<Question>? questions) async {
+/*Future<void> imageListBuilder(List<Question>? questions) async {
   for (var question in questions!) {
     if (question.imageUrl != "") {
       Image? image = await API.parseImage(question.imageUrl);
@@ -145,12 +145,12 @@ Future<void> imageListBuilder(List<Question>? questions) async {
       questionImages.add(null);
     }
   }
-}
+}*/
 
 Future<List<Question>?> fetchAndBuildQuiz() async {
   fetchedQuestions = fetchQuizQuestions();
   questions = await fetchedQuestions;
-  await imageListBuilder(questions);
+  //await imageListBuilder(questions);
   return questions;
 }
 
@@ -258,13 +258,9 @@ class _QuizScreenState extends State<QuizScreen> {
           
           // Conditional rendering of either Tree question or Multiple Choice question
           if (currQuestion.isTree && currQuestion.options.isNotEmpty)
-            
             buildTreeQuestion(currQuestion.options.map(int.parse).toList())
           else
-            //SingleChildScrollView(
-              //child:
-              buildMultipleChoiceQuestion(currQuestion),
-            //)
+            buildMultipleChoiceQuestion(currQuestion),
         ],
       ),
     //),
@@ -279,14 +275,33 @@ class _QuizScreenState extends State<QuizScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (questionImages[questionIndex] != null)
+            if (currQuestion.imageUrl != "")
+              Center(
+                child: SizedBox(
+                  height: 250,
+                  width: 250,
+                  child: FutureBuilder<Image?>(
+                    future: API.parseImage(currQuestion.imageUrl),
+                    builder: (BuildContext context, AsyncSnapshot<Image?> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // Display a loading indicator
+                      } else if (snapshot.hasError) {
+                        return Text('Error loading image'); // Display an error message
+                      } else {
+                        return snapshot.data!; // Display the image
+                      }
+                    },
+                  ),
+                ),
+              ),
+            /*if (questionImages[questionIndex] != null)
               Center(
                 child: SizedBox(
                   child: questionImages[questionIndex],
                   height: 250,
                   width: 250,
                 ),
-              ),
+              ),*/
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),  // Prevent ListView from scrolling independently
               shrinkWrap: true,
