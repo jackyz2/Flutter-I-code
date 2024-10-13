@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_application_1/pages/authpage.dart';
 import 'package:flutter_application_1/pages/gpttestpage.dart';
 import 'package:flutter_application_1/pages/profilepage.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_application_1/pages/randomPractice.dart';
 //import 'package:flutter_application_1/pages/testpage.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   bool isAuthenticated = await API.validate();
   runApp(ProviderScope(child: MyApp(isAuthenticated: isAuthenticated)));

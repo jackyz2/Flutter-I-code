@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 class OpenAIService {
-  final String apiKey = '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';
+  final String? apiKey = dotenv.env['OPEN_AI_API_KEY'];
   Future<String> getCompletion(String prompt) async { 
     final url = Uri.parse('https://api.openai.com/v1/completions');
     final response = await http.post( 
