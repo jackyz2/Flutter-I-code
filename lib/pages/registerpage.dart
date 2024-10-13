@@ -1,28 +1,59 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/api.dart';
-
 import 'profilepage.dart';
 import 'loginpage.dart';
 
+class RegisterPage extends StatefulWidget {
+  RegisterPage({super.key});
 
-class RegisterPage extends StatelessWidget {
-   RegisterPage({super.key});
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  String errorMessage = "";
+
   void registerUser() {
-    var data = { 
+    var data = {
       "email": emailController.text,
       "password": passwordController.text,
     };
     API.signUp(data);
   }
+
+  bool validateInputs() {
+    // Check if email contains '@' and password length is greater than 5
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    if (!email.contains('@')) {
+      setState(() {
+        errorMessage = "Please enter a valid email address.";
+      });
+      return false;
+    }
+
+    if (password.length <= 5) {
+      setState(() {
+        errorMessage = "Password must be longer than 5 characters.";
+      });
+      return false;
+    }
+
+    // If everything is valid, clear the error message
+    setState(() {
+      errorMessage = "";
+    });
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        //padding: EdgeInsets.symmetric(vertical: 30),
         color: Colors.lightBlue[200],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,8 +107,7 @@ class RegisterPage extends StatelessWidget {
                               height: 60,
                               decoration: const BoxDecoration(
                                   border: Border(
-                                      bottom:
-                                          BorderSide(color: Colors.blueGrey))),
+                                      bottom: BorderSide(color: Colors.blueGrey))),
                               child: TextField(
                                 controller: emailController,
                                 decoration: const InputDecoration(
@@ -90,16 +120,14 @@ class RegisterPage extends StatelessWidget {
                             ),
                             Container(
                               height: 60,
-                              decoration: const BoxDecoration(
-                                  //border: Border(bottom: BorderSide(color: Colors.blueGrey))
-                                  ),
+                              decoration: const BoxDecoration(),
                               child: TextField(
                                 obscureText: true,
                                 controller: passwordController,
                                 decoration: const InputDecoration(
                                   hintText: "  Password",
-                                  hintStyle:
-                                      TextStyle(color: Colors.grey, height: 2),
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey, height: 2),
                                   border: InputBorder.none,
                                 ),
                               ),
@@ -108,6 +136,18 @@ class RegisterPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(
+                        height: 20,
+                      ),
+                      // Display error message if input is invalid
+                      if (errorMessage.isNotEmpty)
+                        Text(
+                          errorMessage,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
+                        ),
+                      const SizedBox(
                         height: 30,
                       ),
                       GestureDetector(
@@ -115,7 +155,7 @@ class RegisterPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  LoginPage()),
+                                builder: (context) => LoginPage()),
                           );
                         },
                         child: const Center(
@@ -130,13 +170,16 @@ class RegisterPage extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          registerUser();
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                            (route) => false,
-                          );
+                          // Validate the input before registration
+                          if (validateInputs()) {
+                            registerUser();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()),
+                              (route) => false,
+                            );
+                          }
                         },
                         child: Container(
                           height: 50,

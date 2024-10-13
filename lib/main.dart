@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/authpage.dart';
+import 'package:flutter_application_1/pages/gpttestpage.dart';
 import 'package:flutter_application_1/pages/profilepage.dart';
 import 'package:flutter_application_1/pages/learningpage.dart';
 import 'package:flutter_application_1/pages/registerpage.dart';
@@ -44,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
     LearningPage(),
     ProfilePage(),
     ChoosePage(),
-    //TreePage()
+    GPTChatScreen()
   ];
   
   Color mainColor = Color.fromARGB(255, 91, 112, 204);
@@ -85,6 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.wechat),
             label: 'Practice',
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'AI Chat',
           ),
         ],
       ),
