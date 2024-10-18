@@ -4,7 +4,29 @@ const {errorHandler, withTransaction} = require("../util");
 const {HttpError} = require("../error");
 const argon2 = require("argon2");
 
+const isPasswordTooLong = (password) => {
+    return password.length > 20;
+};
+const containsUnsafeSymbols = (password) => {
+    const unsafeSymbols = `'";<>\\`;
+    for (let char of password) {
+        if (unsafeSymbols.includes(char)) {
+            return true; 
+        }
+    }
+    return false;  
+};
+
+
 const signUp = errorHandler(withTransaction(async (req, res, session)=> {
+    if (isPasswordTooLong(req.body.password)) {
+        throw new HttpError(400, 'Password is too long');
+    }
+
+    if (containsUnsafeSymbols(req.body.password)) {
+        throw new HttpError(400, 'Illegal password! SQL injection warning');
+
+    }
     const userDoc = models.User({ 
         email: req.body.email,
         password: await argon2.hash(req.body.password),
