@@ -37,21 +37,21 @@ class _ProgressBarState extends State<ProgressBar> {
     return LinearProgressIndicator(
       value: progress,
       backgroundColor: Colors.grey[300],
-      valueColor: AlwaysStoppedAnimation<Color>(const Color.fromARGB(255, 182, 218, 248)),
+      valueColor: AlwaysStoppedAnimation<Color>(
+          const Color.fromARGB(255, 182, 218, 248)),
     );
   }
 }
 
 class AnswerCard extends StatelessWidget {
-  const AnswerCard({
-    super.key,
-    required this.question,
-    required this.isSelected,
-    required this.currentIndex,
-    required this.correctAnswer,
-    required this.selectedAnswerIndex,
-    required this.check
-  });
+  const AnswerCard(
+      {super.key,
+      required this.question,
+      required this.isSelected,
+      required this.currentIndex,
+      required this.correctAnswer,
+      required this.selectedAnswerIndex,
+      required this.check});
 
   final String question;
   final bool isSelected;
@@ -94,7 +94,10 @@ class AnswerCard extends StatelessWidget {
             Expanded(
               child: Text(
                 question,
-                style: const TextStyle(fontSize: 16, color: Colors.black, decoration: TextDecoration.none),
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    decoration: TextDecoration.none),
               ),
             ),
             SizedBox(height: 10 * HstretchConstant),
@@ -202,7 +205,6 @@ class NodeTemplate {
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
   @override
-
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
@@ -225,20 +227,21 @@ class _QuizScreenState extends State<QuizScreen> {
     super.initState();
     treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
   }
+
   Widget build(BuildContext context) {
-  // Screen size adjustments
-  screenWidth = MediaQuery.of(context).size.width;
-  screenHeight = MediaQuery.of(context).size.height;
-  WstretchConstant = screenWidth / 480;
-  HstretchConstant = screenHeight / 932;
+    // Screen size adjustments
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+    WstretchConstant = screenWidth / 480;
+    HstretchConstant = screenHeight / 932;
 
-  // Get the current question
-  currQuestion = questions![questionIndex];
+    // Get the current question
+    currQuestion = questions![questionIndex];
 
-  // Main widget layout
-  return Padding(
-    padding: EdgeInsets.all(24.0),
-    //child: SingleChildScrollView(
+    // Main widget layout
+    return Padding(
+      padding: EdgeInsets.all(24.0),
+      //child: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -248,231 +251,245 @@ class _QuizScreenState extends State<QuizScreen> {
             currentIndex: questionIndex,
             totalQuestions: questions!.length,
           ),
-          SizedBox(height: 20 * HstretchConstant), // Add space between ProgressBar and title
+          SizedBox(
+              height: 20 *
+                  HstretchConstant), // Add space between ProgressBar and title
           Text(
             currQuestion.questionTitle,
-            style: const TextStyle(fontSize: 25, color: Colors.black, decoration: TextDecoration.none),
+            style: const TextStyle(
+                fontSize: 25,
+                color: Colors.black,
+                decoration: TextDecoration.none),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 30 * HstretchConstant), // Add space before question content
-          
+          SizedBox(
+              height:
+                  30 * HstretchConstant), // Add space before question content
+
           // Conditional rendering of either Tree question or Multiple Choice question
           if (currQuestion.isTree && currQuestion.options.isNotEmpty)
-            
             buildTreeQuestion(currQuestion.options.map(int.parse).toList())
           else
             //SingleChildScrollView(
-              //child:
-              buildMultipleChoiceQuestion(currQuestion),
-            //)
+            //child:
+            buildMultipleChoiceQuestion(currQuestion),
+          //)
         ],
       ),
-    //),
-  );
-}
+      //),
+    );
+  }
 
   Widget buildMultipleChoiceQuestion(Question currQuestion) {
-  return Expanded(
-    child: SingleChildScrollView(  // Allows the entire content to scroll
-      child: Padding(
-        padding: EdgeInsets.all(0.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (questionImages[questionIndex] != null)
-              Center(
-                child: SizedBox(
-                  child: questionImages[questionIndex],
-                  height: 250,
-                  width: 250,
-                ),
-              ),
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(),  // Prevent ListView from scrolling independently
-              shrinkWrap: true,
-              itemCount: currQuestion.options.length,
-              itemBuilder: (context, index) {
-                bool isSelected = selectedAnswerIndex == index;
-                return GestureDetector(
-                  onTap: checked
-                      ? null
-                      : () {
-                          setState(() {
-                            selectedAnswerIndex = index;
-                          });
-                        },
-                  child: AnswerCard(
-                    currentIndex: index,
-                    question: currQuestion.options[index],
-                    isSelected: isSelected,
-                    selectedAnswerIndex: selectedAnswerIndex,
-                    correctAnswer: currQuestion.answer,
-                    check: checked,
+    return Expanded(
+      child: SingleChildScrollView(
+        // Allows the entire content to scroll
+        child: Padding(
+          padding: EdgeInsets.all(0.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (questionImages[questionIndex] != null)
+                Center(
+                  child: SizedBox(
+                    child: questionImages[questionIndex],
+                    height: 250,
+                    width: 250,
                   ),
-                );
-              },
-            ),
-            SizedBox(height: 30 * HstretchConstant),
-            AbsorbPointer(
-              absorbing: selectedAnswerIndex == null,
-              child: GestureDetector(
-                onTap: !checked
-                    ? () {
-                        if (selectedAnswerIndex != null) {
-                          if (currQuestion.options[selectedAnswerIndex!] ==
-                              currQuestion.answer) {
-                            ++score;
-                          }
-                        }
-                        setState(() {
-                          checked = true;
-                          buttonText = "Continue";
-                        });
-                      }
-                    : questionIndex == questions!.length - 1
-                        ? () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ScoreScreen(score: score),
-                              ),
-                            );
-                          }
+                ),
+              ListView.builder(
+                physics:
+                    NeverScrollableScrollPhysics(), // Prevent ListView from scrolling independently
+                shrinkWrap: true,
+                itemCount: currQuestion.options.length,
+                itemBuilder: (context, index) {
+                  bool isSelected = selectedAnswerIndex == index;
+                  return GestureDetector(
+                    onTap: checked
+                        ? null
                         : () {
                             setState(() {
-                              ++questionIndex;
-                              selectedAnswerIndex = null;
-                              buttonText = "Check Answer";
-                              checked = false;
-                              currQuestion = questions![questionIndex];
+                              selectedAnswerIndex = index;
                             });
                           },
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: selectedAnswerIndex == null
-                        ? Colors.grey[400]
-                        : Colors.lightBlue[200],
-                  ),
-                  child: Center(
-                    child: Text(
-                      buttonText,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        decoration: TextDecoration.none,
+                    child: AnswerCard(
+                      currentIndex: index,
+                      question: currQuestion.options[index],
+                      isSelected: isSelected,
+                      selectedAnswerIndex: selectedAnswerIndex,
+                      correctAnswer: currQuestion.answer,
+                      check: checked,
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 30 * HstretchConstant),
+              AbsorbPointer(
+                absorbing: selectedAnswerIndex == null,
+                child: GestureDetector(
+                  onTap: !checked
+                      ? () {
+                          if (selectedAnswerIndex != null) {
+                            if (currQuestion.options[selectedAnswerIndex!] ==
+                                currQuestion.answer) {
+                              ++score;
+                            }
+                          }
+                          setState(() {
+                            checked = true;
+                            buttonText = "Continue";
+                          });
+                        }
+                      : questionIndex == questions!.length - 1
+                          ? () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ScoreScreen(score: score),
+                                ),
+                              );
+                            }
+                          : () {
+                              setState(() {
+                                ++questionIndex;
+                                selectedAnswerIndex = null;
+                                buttonText = "Check Answer";
+                                checked = false;
+                                currQuestion = questions![questionIndex];
+                              });
+                            },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: selectedAnswerIndex == null
+                          ? Colors.grey[400]
+                          : Colors.lightBlue[200],
+                    ),
+                    child: Center(
+                      child: Text(
+                        buttonText,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          decoration: TextDecoration.none,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-
-  Widget buildTreeQuestion(List<int> answers) {
-  //int nodeValue = 0;
-  //treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
-
-  return ConstrainedBox(
-    constraints: BoxConstraints(
-      maxHeight: MediaQuery.of(context).size.height * 0.7, // Set a maximum height
-      maxWidth: MediaQuery.of(context).size.width * 1.5,   // Set a maximum width
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Tree UI layout
-        Flexible(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Level 1 - 1 box
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildDragTarget(0, answers),
-                ],
-              ),
-              SizedBox(height: 30.0 * HstretchConstant), // For spacing between levels
-
-              // Level 2 - 2 boxes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildDragTarget(1, answers),
-                  SizedBox(width: 100 * WstretchConstant),
-                  buildDragTarget(2, answers),
-                ],
-              ),
-              SizedBox(height: 30.0 * HstretchConstant), // For spacing between levels
-
-              // Level 3 - 4 boxes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildDragTarget(3, answers),
-                  SizedBox(width: 40 * WstretchConstant),
-                  buildDragTarget(4, answers),
-                  SizedBox(width: 41 * WstretchConstant),
-                  buildDragTarget(5, answers),
-                  SizedBox(width: 40 * WstretchConstant),
-                  buildDragTarget(6, answers),
-                ],
-              ),
-              SizedBox(height: 30.0 * HstretchConstant), // For spacing between levels
-
-              // Level 4 - 8 boxes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildDragTarget(7, answers),
-                  buildDragTarget(8, answers),
-                  buildDragTarget(9, answers),
-                  buildDragTarget(10, answers),
-                  buildDragTarget(11, answers),
-                  buildDragTarget(12, answers),
-                  buildDragTarget(13, answers),
-                  buildDragTarget(14, answers),
-                ],
-              ),
             ],
           ),
         ),
-        SizedBox(height: 30 * HstretchConstant),
-        buildDraggableBox(),
-        SizedBox(height: 30 * HstretchConstant),
-        // FloatingActionButton(
-        //   onPressed: () async{
-        //      await _showInputDialog(context); // Show the dialog to enter value
-        //   },
-        //   backgroundColor: Colors.blue,
-        //   child: Icon(Icons.add),
-        // ),
-FloatingActionButton(
-  onPressed: () async {
-    int? result = await _showInputDialog(context); // Get the result from the dialog
-    
-    if (result != null && mounted) { // Ensure the widget is still mounted
-      setState(() {
-        nodeValue = result;
-      });
-    }
-  },
-  backgroundColor: Colors.blue,
-  child: Icon(Icons.add),
-),
+      ),
+    );
+  }
 
+  Widget buildTreeQuestion(List<int> answers) {
+    //int nodeValue = 0;
+    //treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
 
-        SizedBox(height: 30 * HstretchConstant),
-        GestureDetector(
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight:
+            MediaQuery.of(context).size.height * 0.7, // Set a maximum height
+        maxWidth:
+            MediaQuery.of(context).size.width * 1.5, // Set a maximum width
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Tree UI layout
+          Flexible(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Level 1 - 1 box
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildDragTarget(0, answers),
+                  ],
+                ),
+                SizedBox(
+                    height:
+                        30.0 * HstretchConstant), // For spacing between levels
+
+                // Level 2 - 2 boxes
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildDragTarget(1, answers),
+                    SizedBox(width: 100 * WstretchConstant),
+                    buildDragTarget(2, answers),
+                  ],
+                ),
+                SizedBox(
+                    height:
+                        30.0 * HstretchConstant), // For spacing between levels
+
+                // Level 3 - 4 boxes
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildDragTarget(3, answers),
+                    SizedBox(width: 40 * WstretchConstant),
+                    buildDragTarget(4, answers),
+                    SizedBox(width: 41 * WstretchConstant),
+                    buildDragTarget(5, answers),
+                    SizedBox(width: 40 * WstretchConstant),
+                    buildDragTarget(6, answers),
+                  ],
+                ),
+                SizedBox(
+                    height:
+                        30.0 * HstretchConstant), // For spacing between levels
+
+                // Level 4 - 8 boxes
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildDragTarget(7, answers),
+                    buildDragTarget(8, answers),
+                    buildDragTarget(9, answers),
+                    buildDragTarget(10, answers),
+                    buildDragTarget(11, answers),
+                    buildDragTarget(12, answers),
+                    buildDragTarget(13, answers),
+                    buildDragTarget(14, answers),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 30 * HstretchConstant),
+          buildDraggableBox(),
+          SizedBox(height: 30 * HstretchConstant),
+          FloatingActionButton(
+            onPressed: () async {
+              await _showInputDialog(context); // Show the dialog to enter value
+            },
+            backgroundColor: Colors.blue,
+            child: Icon(Icons.add),
+          ),
+// FloatingActionButton(
+//   onPressed: () async {
+//     int? result = await _showInputDialog(context); // Get the result from the dialog
+
+//     if (result != null && mounted) { // Ensure the widget is still mounted
+//       setState(() {
+//         nodeValue = result;
+//       });
+//     }
+//   },
+//   backgroundColor: Colors.blue,
+//   child: Icon(Icons.add),
+// ),
+
+          SizedBox(height: 30 * HstretchConstant),
+          GestureDetector(
             onTap: !checked
                 ? () {
                     checkAnswers();
@@ -486,7 +503,9 @@ FloatingActionButton(
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                                builder: (context) => ScoreScreen(score: score,)),
+                              builder: (context) => ScoreScreen(
+                                    score: score,
+                                  )),
                         );
                       }
                     : () {
@@ -502,42 +521,47 @@ FloatingActionButton(
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
-                color: selectedAnswerIndex == null ? Colors.grey[400] : Colors.lightBlue[200],
+                color: selectedAnswerIndex == null
+                    ? Colors.grey[400]
+                    : Colors.lightBlue[200],
               ),
               child: Center(
                 child: Text(
                   buttonText,
-                  style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.none),
-                  
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      decoration: TextDecoration.none),
                 ),
               ),
             ),
           ),
-      ],
-    ),
-    
-  );
-  
-}
-
+        ],
+      ),
+    );
+  }
 
   Widget buildDragTarget(int index, List<int> answers) {
-    if(treeNodes[index].value == answers[index]) {
+    if (treeNodes[index].value == answers[index]) {
       treeNodes[index].isCorrect = true;
     } else {
       treeNodes[index].isCorrect = false;
     }
     double sizeConstant = 1;
-    if(index == 0){
+    if (index == 0) {
       sizeConstant = 1.5;
-    }
-    else if(index == 1 || index == 2){
+    } else if (index == 1 || index == 2) {
       sizeConstant = 1.3;
-    }
-    else if(index == 3 || index == 4 || index == 5 || index == 6){
+    } else if (index == 3 || index == 4 || index == 5 || index == 6) {
       sizeConstant = 1.1;
-    }
-    else if(index == 7 || index == 8 || index == 9 || index == 10 || index == 11 || index == 12 || index == 13 || index == 14){
+    } else if (index == 7 ||
+        index == 8 ||
+        index == 9 ||
+        index == 10 ||
+        index == 11 ||
+        index == 12 ||
+        index == 13 ||
+        index == 14) {
       sizeConstant = 1;
     }
     return GestureDetector(
@@ -552,7 +576,8 @@ FloatingActionButton(
       child: DragTarget<int>(
         onAccept: (data) {
           setState(() {
-            treeNodes[index].color = Colors.blue; // Change color when blue box is dropped
+            treeNodes[index].color =
+                Colors.blue; // Change color when blue box is dropped
             treeNodes[index].value = data;
             treeNodes[index].solid = true;
             if (treeNodes[index].value == answers[index]) {
@@ -564,64 +589,74 @@ FloatingActionButton(
         },
         builder: (context, candidateData, rejectedData) {
           return Container(
-            
             width: sizeConstant * 44.0 * WstretchConstant,
             height: sizeConstant * 45.0 * HstretchConstant,
             margin: EdgeInsets.symmetric(horizontal: 4.0 * WstretchConstant),
             decoration: BoxDecoration(
-            color: treeNodes[index].color, // Dynamic color based on state
-            shape: BoxShape.circle, // Makes the container a circle
-          ),
+              color: treeNodes[index].color, // Dynamic color based on state
+              shape: BoxShape.circle, // Makes the container a circle
+            ),
             //color: treeNodes[index].color, // Dynamic color based on state
             child: Center(
               child: Text(
-                treeNodes[index].value == 0 ? "" : treeNodes[index].value.toString(),
-                style: TextStyle(fontSize: 15 * sizeConstant, color: Colors.white, decoration: TextDecoration.none),
+                treeNodes[index].value == 0
+                    ? ""
+                    : treeNodes[index].value.toString(),
+                style: TextStyle(
+                    fontSize: 15 * sizeConstant,
+                    color: Colors.white,
+                    decoration: TextDecoration.none),
               ),
             ),
           );
         },
-        
       ),
     );
   }
 
   Widget buildDraggableBox() {
     return Draggable<int>(
-            data: nodeValue,
-            feedback: Container(
-              width: 50.0 * WstretchConstant,
-              height: 50.0 * HstretchConstant,
-              
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.7),
-                shape: BoxShape.circle,
-              ),
-              child: Center(child: Text(nodeValue.toString(), 
-              
-              style: TextStyle(fontSize: 20, color: Colors.white, decoration: TextDecoration.none),)),
-            ),
-            childWhenDragging: Container(
-              width: 50.0 * WstretchConstant,
-              height: 50.0 * HstretchConstant,
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-              
-            ),
-            child: Container(
-              width: 50.0 * WstretchConstant,
-              height: 50.0 * HstretchConstant,
-              
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-              child: Center(child: Text(nodeValue.toString(), 
-              style: TextStyle(fontSize: 20, color: Colors.white, decoration: TextDecoration.none),)),
-            )
-          );
+        data: nodeValue,
+        feedback: Container(
+          width: 50.0 * WstretchConstant,
+          height: 50.0 * HstretchConstant,
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.7),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+              child: Text(
+            nodeValue.toString(),
+            style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                decoration: TextDecoration.none),
+          )),
+        ),
+        childWhenDragging: Container(
+          width: 50.0 * WstretchConstant,
+          height: 50.0 * HstretchConstant,
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.3),
+            shape: BoxShape.circle,
+          ),
+        ),
+        child: Container(
+          width: 50.0 * WstretchConstant,
+          height: 50.0 * HstretchConstant,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+              child: Text(
+            nodeValue.toString(),
+            style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                decoration: TextDecoration.none),
+          )),
+        ));
   }
 
   void checkAnswers() {
@@ -631,8 +666,7 @@ FloatingActionButton(
         if (!node.isCorrect) {
           correct = 0;
           node.color = Colors.red;
-        }
-        else {
+        } else {
           node.color = Colors.green;
         }
       }
@@ -640,12 +674,11 @@ FloatingActionButton(
     });
   }
 
-Future<int?> _showInputDialog(BuildContext context) async {
+  Future<void> _showInputDialog(BuildContext context) async {
   TextEditingController controller = TextEditingController();
-
-  return await showDialog<int>(
+  await showDialog(
     context: context,
-    builder: (context) {
+    builder: (dialogContext) {
       return AlertDialog(
         title: Text('Enter value for the Node'),
         content: TextField(
@@ -656,8 +689,15 @@ Future<int?> _showInputDialog(BuildContext context) async {
         actions: [
           TextButton(
             onPressed: () {
-              // Return the parsed value or 0 if invalid
-              Navigator.of(context).pop(int.tryParse(controller.text) ?? 0);
+              if (mounted) {
+                setState(() {
+                  nodeValue = int.tryParse(controller.text) ?? 0;
+                  print('nodeValue set to $nodeValue');
+                    print('Current questionIndex: $questionIndex');
+                    print('Checked status: $checked');
+                });
+              }
+              Navigator.of(dialogContext).pop();
             },
             child: Text('Submit'),
           ),
@@ -666,7 +706,6 @@ Future<int?> _showInputDialog(BuildContext context) async {
     },
   );
 }
-
 // Future<void> _showInputDialog(BuildContext context) async{
 //     TextEditingController controller = TextEditingController();
 //     await showDialog(
@@ -694,5 +733,4 @@ Future<int?> _showInputDialog(BuildContext context) async {
 //       },
 //     );
 //   }
-
 }
