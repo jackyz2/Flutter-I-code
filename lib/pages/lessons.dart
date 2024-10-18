@@ -467,26 +467,27 @@ class _QuizScreenState extends State<QuizScreen> {
           SizedBox(height: 30 * HstretchConstant),
           buildDraggableBox(),
           SizedBox(height: 30 * HstretchConstant),
+          // FloatingActionButton(
+          //   onPressed: () async {
+          //     await _showInputDialog(context); // Show the dialog to enter value
+          //   },
+          //   backgroundColor: Colors.blue,
+          //   child: Icon(Icons.add),
+          // ),
           FloatingActionButton(
             onPressed: () async {
-              await _showInputDialog(context); // Show the dialog to enter value
+              int? result = await _showInputDialog(
+                  context); // Get the result from the dialog
+
+              if (result != null && mounted) {
+                setState(() {
+                  nodeValue = result;
+                });
+              }
             },
             backgroundColor: Colors.blue,
             child: Icon(Icons.add),
           ),
-// FloatingActionButton(
-//   onPressed: () async {
-//     int? result = await _showInputDialog(context); // Get the result from the dialog
-
-//     if (result != null && mounted) { // Ensure the widget is still mounted
-//       setState(() {
-//         nodeValue = result;
-//       });
-//     }
-//   },
-//   backgroundColor: Colors.blue,
-//   child: Icon(Icons.add),
-// ),
 
           SizedBox(height: 30 * HstretchConstant),
           GestureDetector(
@@ -674,63 +675,65 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  Future<void> _showInputDialog(BuildContext context) async {
-  TextEditingController controller = TextEditingController();
-  await showDialog(
-    context: context,
-    builder: (dialogContext) {
-      return AlertDialog(
-        title: Text('Enter value for the Node'),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(hintText: "Enter value"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (mounted) {
-                setState(() {
-                  nodeValue = int.tryParse(controller.text) ?? 0;
-                  print('nodeValue set to $nodeValue');
-                    print('Current questionIndex: $questionIndex');
-                    print('Checked status: $checked');
-                });
-              }
-              Navigator.of(dialogContext).pop();
-            },
-            child: Text('Submit'),
-          ),
-        ],
-      );
-    },
-  );
-}
-// Future<void> _showInputDialog(BuildContext context) async{
-//     TextEditingController controller = TextEditingController();
-//     await showDialog(
-//       context: context,
-//       builder: (context) {
-//         return AlertDialog(
-//           title: Text('Enter value for the Node'),
-//           content: TextField(
-//             controller: controller,
-//             keyboardType: TextInputType.number,
-//             decoration: InputDecoration(hintText: "Enter value"),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () {
+//   Future<void> _showInputDialog(BuildContext context) async {
+//   TextEditingController controller = TextEditingController();
+//   await showDialog(
+//     context: context,
+//     builder: (dialogContext) {
+//       return AlertDialog(
+//         title: Text('Enter value for the Node'),
+//         content: TextField(
+//           controller: controller,
+//           keyboardType: TextInputType.number,
+//           decoration: InputDecoration(hintText: "Enter value"),
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               if (mounted) {
 //                 setState(() {
 //                   nodeValue = int.tryParse(controller.text) ?? 0;
+//                   print('nodeValue set to $nodeValue');
+//                     print('Current questionIndex: $questionIndex');
+//                     print('Checked status: $checked');
 //                 });
-//                 Navigator.of(context).pop();
-//               },
-//               child: Text('Submit'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
+//               }
+//               Navigator.of(dialogContext).pop();
+//             },
+//             child: Text('Submit'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
+  Future<int?> _showInputDialog(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+    int? enteredValue;
+
+    await showDialog<int?>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text('Enter value for the Node'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: "Enter value"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                enteredValue = int.tryParse(controller.text);
+                Navigator.of(dialogContext).pop(enteredValue);
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return enteredValue;
+  }
 }
