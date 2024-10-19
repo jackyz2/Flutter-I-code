@@ -6,14 +6,14 @@ const models = require("../models");
 
 const jwt = require("jsonwebtoken");
   
-  const parseQ = errorHandler(withTransaction(async(req, res, session) => {
-    const decodeToken = (token) => {
-      try {
-          return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-      } catch(err) {
+const parseQ = errorHandler(withTransaction(async(req, res, session) => {
+  const decodeToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    } catch(err) {
           // err
-          throw new HttpError(401, 'Unauthorised');
-      }
+        throw new HttpError(401, 'Unauthorised');
+    }
   }
 
     const refreshToken = decodeToken(req.body.refreshToken);
@@ -58,6 +58,33 @@ const updateLevel = errorHandler(withTransaction(async(req, res, session) => {
   await user.save({session});
 }))
 
-router.post('/updatelevel', updateLevel)
-router.post('/parseq', parseQ)
+const parseUser = errorHandler(withTransaction(async(req, res, session) => {
+  const decodeToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    } catch(err) {
+        // err
+        throw new HttpError(401, 'Unauthorised');
+    }
+}
+
+  const refreshToken = decodeToken(req.body.refreshToken);
+  let user = await models.User.findById(refreshToken.userId);
+  console.log("User:", user);
+  const userLevel = user.level + 1;
+  console.log("UserLevel:", userLevel);
+  const interests = user.interests;
+  const randomInterest = interests[Math.floor(Math.random() * interests.length)];
+  console.log("Random Interest:", randomInterest);
+
+  return res.json({
+    userLevel: userLevel,
+    interest: randomInterest
+  });
+}));
+
+
+router.post('/updatelevel', updateLevel);
+router.post('/parseq', parseQ);
+router.post('/parseuser', parseUser);
 module.exports = router;

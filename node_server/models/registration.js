@@ -13,6 +13,9 @@ let UserSchema = new mongoose.Schema({
     },
     'level': {
         type: Number,
+    },
+    'interests': {
+        type: Array
     }
 })
 
