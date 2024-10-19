@@ -7,8 +7,7 @@ import 'package:flutter_application_1/pages/learningpage.dart';
 import 'package:flutter_application_1/pages/scorescreen.dart';
 import 'package:flutter_application_1/pages/treescreen.dart';
 
-Future<List<Question>>? fetchedQuestions;
-List<Question>? questions;
+
 //List<Image?> questionImages = [];
 
 Future<List<Question>> fetchQuizQuestions() async {
@@ -147,47 +146,33 @@ class QuizFetchScreen extends StatefulWidget {
   }
 }*/
 
-Future<List<Question>?> fetchAndBuildQuiz() async {
+/*Future<List<Question>?> fetchAndBuildQuiz() async {
   fetchedQuestions = fetchQuizQuestions();
   questions = await fetchedQuestions;
   //await imageListBuilder(questions);
   return questions;
-}
+}*/
 
 class _QuizFetchScreenState extends State<QuizFetchScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 254, 254, 254),
-            Color.fromARGB(255, 164, 191, 233)
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: FutureBuilder<List<Question>?>(
-        future: fetchAndBuildQuiz(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error.toString()}'));
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            questions = snapshot.data!;
-            return QuizScreen();
-          } else {
-            return Center(child: Text('No questions available'));
-          }
-        },
-      ),
+    return FutureBuilder<List<Question>>(
+      future: fetchQuizQuestions(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error.toString()}'));
+        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          return QuizScreen(questions: snapshot.data!); // Pass questions here
+        } else {
+          return Center(child: Text('No questions available'));
+        }
+      },
     );
   }
 }
+
 
 class NodeTemplate {
   int id = 0;
@@ -200,13 +185,18 @@ class NodeTemplate {
 }
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({super.key});
-  @override
+  final List<Question> questions;
 
+  const QuizScreen({Key? key, required this.questions}) : super(key: key);
+
+  @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
+
 class _QuizScreenState extends State<QuizScreen> {
+  //Future<List<Question>>? fetchedQuestions;
+  //List<Question>? questions;
   int? selectedAnswerIndex;
   int questionIndex = 0;
   int idx = 0;
@@ -219,13 +209,13 @@ class _QuizScreenState extends State<QuizScreen> {
   double HstretchConstant = 0;
   late List<NodeTemplate> treeNodes;
   int nodeValue = 0;
-  Question currQuestion = questions![0];
+  
   @override
   void initState() {
     super.initState();
     treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
   }
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
   // Screen size adjustments
   screenWidth = MediaQuery.of(context).size.width;
   screenHeight = MediaQuery.of(context).size.height;
@@ -233,39 +223,56 @@ class _QuizScreenState extends State<QuizScreen> {
   HstretchConstant = screenHeight / 932;
 
   // Get the current question
-  currQuestion = questions![questionIndex];
+  Question currQuestion = widget.questions[questionIndex];
 
   // Main widget layout
-  return Padding(
-    padding: EdgeInsets.all(24.0),
-    //child: SingleChildScrollView(
+  return Container(
+    decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 254, 254, 254),
+            Color.fromARGB(255, 164, 191, 233)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+    child: Padding(
+      padding: EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // ProgressBar and Question Title (common to all question types)
+          // Your existing widgets
           SizedBox(height: 35 * HstretchConstant),
           ProgressBar(
             currentIndex: questionIndex,
-            totalQuestions: questions!.length,
+            totalQuestions: widget.questions.length,
           ),
-          SizedBox(height: 20 * HstretchConstant), // Add space between ProgressBar and title
+          SizedBox(height: 20 * HstretchConstant),
           Text(
             currQuestion.questionTitle,
-            style: const TextStyle(fontSize: 25, color: Colors.black, decoration: TextDecoration.none),
+            style: const TextStyle(
+              fontSize: 25,
+              color: Colors.black,
+              decoration: TextDecoration.none,
+            ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 30 * HstretchConstant), // Add space before question content
-          
-          // Conditional rendering of either Tree question or Multiple Choice question
+          SizedBox(height: 30 * HstretchConstant),
+          // Conditional rendering of question types
           if (currQuestion.isTree && currQuestion.options.isNotEmpty)
-            buildTreeQuestion(currQuestion.options.map(int.parse).toList())
+            buildTreeQuestion(
+              currQuestion,
+              currQuestion.options.map(int.parse).toList(),
+            )
           else
             buildMultipleChoiceQuestion(currQuestion),
         ],
       ),
-    //),
+    ),
   );
 }
+
 
   Widget buildMultipleChoiceQuestion(Question currQuestion) {
   return Expanded(
@@ -344,7 +351,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           buttonText = "Continue";
                         });
                       }
-                    : questionIndex == questions!.length - 1
+                    : questionIndex == widget.questions.length - 1
                         ? () {
                             Navigator.pushReplacement(
                               context,
@@ -360,7 +367,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               selectedAnswerIndex = null;
                               buttonText = "Check Answer";
                               checked = false;
-                              currQuestion = questions![questionIndex];
+                              currQuestion = widget.questions[questionIndex];
                             });
                           },
                 child: Container(
@@ -392,7 +399,7 @@ class _QuizScreenState extends State<QuizScreen> {
 }
 
 
-  Widget buildTreeQuestion(List<int> answers) {
+  Widget buildTreeQuestion(Question currQuestion, List<int> answers) {
   //int nodeValue = 0;
   //treeNodes = List<NodeTemplate>.generate(15, (_) => NodeTemplate());
 
@@ -481,7 +488,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       buttonText = "Continue";
                     });
                   }
-                : questionIndex == questions!.length - 1
+                : questionIndex == widget.questions.length - 1
                     ? () {
                         Navigator.pushReplacement(
                           context,
@@ -495,7 +502,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           selectedAnswerIndex = null;
                           buttonText = "Check Answer";
                           checked = false;
-                          currQuestion = questions![questionIndex];
+                          currQuestion = widget.questions[questionIndex];
                         });
                       },
             child: Container(
@@ -667,4 +674,5 @@ class _QuizScreenState extends State<QuizScreen> {
       },
     );
   }
+
 }

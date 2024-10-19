@@ -44,3 +44,4 @@ app.*.map.json
 
 #.env files
 /lib/.env
+.env
