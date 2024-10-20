@@ -15,9 +15,8 @@ import 'package:flutter_application_1/pages/randomPractice.dart';
 //import 'package:flutter_application_1/pages/testpage.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
-  //await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: "assets/env/.env");
   bool isAuthenticated = await API.validate();
   runApp(ProviderScope(child: MyApp(isAuthenticated: isAuthenticated)));
 }

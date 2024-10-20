@@ -6,8 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_application_1/models/question_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 class API {
-  static const baseUrl = "http://159.223.156.74:8080/api/";
-  //static const baseUrl = "http://127.0.0.1:8080/api/";
+  //static const baseUrl = "http://159.223.156.74:8080/api/";
+  static const baseUrl = "http://127.0.0.1:8080/api/";
   static var currentUserData = new FlutterSecureStorage();
   static bool containUser = false;
 
@@ -112,6 +112,24 @@ static signUp(Map data) async {
     }
   }
 
+  static Future<Map<String, dynamic>> parseUserInfo(Map data) async{
+    var url = Uri.parse("${baseUrl}/parse/parseuser");
+    final response = await http.post(url, body:data);
+    if(response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      int userLevel = jsonResponse['userLevel'];
+      String interest = jsonResponse['interest'];
+
+      return {
+        'userLevel': userLevel,
+        'interest': interest,
+      };
+    }
+    else {
+      throw Exception('Failed to parse user info: ${response.body}');
+    }
+  }
+
   static Future<void> updateLevel(Map data) async {
   var url = Uri.parse("${baseUrl}/parse/updatelevel");
   try {
@@ -128,6 +146,25 @@ static signUp(Map data) async {
     }
   } catch (e) {
     print("Error updating level: ${e.toString()}");
+  }
+}
+
+static Future<void> addInterest(Map data) async {
+  var url = Uri.parse("${baseUrl}/parse/updateinterest");
+  try {
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(data),
+    );
+    if (response.statusCode != 200) {
+      print("Failed to add interest. Status code: ${response.statusCode}");
+      print("Response body: ${response.body}");
+    } else {
+      print("Interest updated successfully!");
+    }
+  } catch (e) {
+    print("Error adding interest: ${e.toString()}");
   }
 }
 
