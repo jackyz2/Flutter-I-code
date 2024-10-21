@@ -108,6 +108,10 @@ const updateUserInterest = errorHandler(withTransaction(async (req, res, session
   const newInterest = req.body.newInterest;
   console.log("New Interest:", newInterest);
 
+  if(!user.interests) {
+    user.interests = []; //if the existing user does not have a interests attribute
+  }
+
   // Check if the interest already exists to avoid duplicates
   if (user.interests.includes(newInterest)) {
     return res.status(400).json({ message: "Interest already exists." });
