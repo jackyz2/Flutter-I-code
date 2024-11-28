@@ -49,7 +49,7 @@ class AnswerCard extends StatelessWidget {
     required this.currentIndex,
     required this.correctAnswer,
     required this.selectedAnswerIndex,
-    required this.check
+    required this.check,
   });
 
   final String question;
@@ -62,18 +62,15 @@ class AnswerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
     double WstretchConstant = screenWidth / 480;
-    double HstretchConstant = screenHeight / 932;
     bool isCorrectAnswer = question == correctAnswer;
     bool isWrongAnswer = !isCorrectAnswer && isSelected;
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        vertical: 10.0 * HstretchConstant,
+        vertical: 10.0 * WstretchConstant,
       ),
       child: Container(
-        height: 70 * HstretchConstant,
         padding: EdgeInsets.all(16.0 * WstretchConstant),
         decoration: BoxDecoration(
           color: isSelected ? Colors.lightBlue[200] : Colors.white,
@@ -89,27 +86,36 @@ class AnswerCard extends StatelessWidget {
           ),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Text(
                 question,
-                style: const TextStyle(fontSize: 16, color: Colors.black, decoration: TextDecoration.none),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  decoration: TextDecoration.none,
+                ),
+                maxLines: null, // Allow text to wrap to multiple lines
+                softWrap: true,
+                overflow: TextOverflow.visible,
               ),
             ),
-            SizedBox(height: 10 * HstretchConstant),
-            selectedAnswerIndex == null || !check
-                ? const SizedBox.shrink()
-                : isCorrectAnswer
-                    ? buildCorrectIcon(WstretchConstant)
-                    : isWrongAnswer
-                        ? buildWrongIcon(WstretchConstant)
-                        : const SizedBox.shrink(),
+            if (selectedAnswerIndex != null && check)
+              SizedBox(width: 10 * WstretchConstant),
+            if (selectedAnswerIndex != null && check)
+              isCorrectAnswer
+                  ? buildCorrectIcon(WstretchConstant)
+                  : isWrongAnswer
+                      ? buildWrongIcon(WstretchConstant)
+                      : const SizedBox.shrink(),
           ],
         ),
       ),
     );
   }
 }
+
 
 Widget buildCorrectIcon(double WstretchConstant) => CircleAvatar(
       radius: 15 * WstretchConstant,
